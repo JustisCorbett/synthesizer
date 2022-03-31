@@ -3,14 +3,35 @@ import './App.css';
 import {useState} from 'react'
 
 function App() {
-    const [polySynth, setPolySynth] = useState(new Tone.PolySynth());
-    const [osc, setOsc] = useState(new Tone.OmniOscillator());
-    const [envelope, setEnvelope] = useState(new Tone.AmplitudeEnvelope());
-    const [filter, setFilter] = useState(new Tone.Filter());
-    const [reverb, setReverb] = useState(new Tone.Reverb());
-    const [delay, setDelay] = useState(new Tone.FeedbackDelay());
-    const [chorus, setChorus] = useState(new Tone.Chorus());
+    const [synth, setSynth] = useState(new Tone.Synth().toDestination());
+    // const [filter, setFilter] = useState(new Tone.Filter());
+    // const [reverb, setReverb] = useState(new Tone.Reverb());
+    // const [delay, setDelay] = useState(new Tone.FeedbackDelay());
+    // const [chorus, setChorus] = useState(new Tone.Chorus());
     const [octave, setOctave] = useState(3);
+
+    document.documentElement.ondragstart = function(){return(false)};
+    let mouse_IsDown = false;
+    document.documentElement.addEventListener("mousedown", function(){mouse_IsDown = true });
+    document.documentElement.addEventListener("mouseup",   function(){mouse_IsDown = false});
+
+    const playNote = (key) => {
+        synth.triggerAttack([key.dataset.note], undefined, 1)
+    }
+
+    const releaseNote = (key) => {
+        synth.triggerRelease([key.dataset.note], undefined)
+    }
+
+    let keyboard = document.getElementById("keyboard");
+    for(let key of keyboard.children){
+        key.addEventListener("mouseover",  function(){if(mouse_IsDown) playNote(key)});
+        key.addEventListener("mousedown",  function(){playNote(key)                 });
+        key.addEventListener("touchstart", function(){playNote(key)                 });
+        key.addEventListener("mouseleave", function(){releaseNote(key)              });
+        key.addEventListener("mouseup",    function(){releaseNote(key)              });
+        key.addEventListener("touchend",   function(){releaseNote(key)              });
+    }
     return (
         <div className="App">
             <div id="keyboard">
