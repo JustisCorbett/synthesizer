@@ -1,38 +1,50 @@
-.App {
-  text-align: center;
+html {
+  height: 100%;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+body {
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  margin: auto;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background-color: #111;
 }
 
-.App-link {
-  color: #61dafb;
+.key {
+  float: left;
+  position: relative;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.white {
+  height: 14.4vw;
+  width: 3.80952vw;
+  z-index: 1;
+  border-top: 0.12vw solid #AAAAAA;
+  border-bottom: 0.12vw solid #AAAAAA;
+  border-left: 0.12vw solid #AAAAAA;
+  background-color: #CBCBCB;
 }
+
+.black {
+  height: 7.92vw;
+  width: 2.09524vw;
+  z-index: 2;
+  border: 0.12vw solid #000000;
+  background-color: #222222;
+}
+
+.a, .b, .d, .e, .g, .black {
+  margin: 0 0 0 -1.16762vw;
+}
+
+#keyboard > .note:last-child {
+  border-right: 0.12vw solid #AAAAAA;
+}
+/*# sourceMappingURL=App.css.map */
