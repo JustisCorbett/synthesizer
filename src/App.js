@@ -42,6 +42,9 @@ function App() {
     }, [])
     return (
         <div className="App">
+            <div className="controls">
+                
+            </div>
             <div id="keyboard">
                 <div className="key white c" data-note="C3">
                 </div>
