@@ -1,9 +1,11 @@
 html {
   height: 100%;
+  width: 100%;
 }
 
 body {
   height: 100%;
+  width: 100%;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -15,6 +17,43 @@ body {
       -ms-flex-align: center;
           align-items: center;
   background-color: #111;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#synth-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding: 1em;
+  background-color: #606060;
+  border: 0.25em solid #8C8C8C;
 }
 
 .App {
@@ -32,6 +71,7 @@ body {
       -ms-flex-pack: center;
           justify-content: center;
   height: 100%;
+  width: 100%;
 }
 
 .controls {
@@ -88,5 +128,43 @@ body {
 
 #keyboard > .note:last-child {
   border-right: 0.12vw solid #AAAAAA;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 160px;
+  height: 20px;
+  margin: 10px 50px;
+  background: #8C8C8C;
+  background-size: 150px 10px;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #606060;
+  position: relative;
+  z-index: 3;
+  -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+          box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+  border: 0.1em solid #141414;
+}
+
+input[type="range"]::-webkit-slider-thumb:after {
+  content: " ";
+  width: 160px;
+  height: 10px;
+  position: absolute;
+  z-index: 1;
+  right: 20px;
+  top: 5px;
+  background: #ff5b32;
+  background: -webkit-gradient(linear, left top, right top, color-stop(1%, #f088fc), color-stop(70%, #AC6CFF));
+  background: linear-gradient(to right, #f088fc 1%, #AC6CFF 70%);
 }
 /*# sourceMappingURL=App.css.map */

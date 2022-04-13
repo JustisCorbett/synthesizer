@@ -14,18 +14,41 @@ $whiteKey_Highlighted: #999999;
 $blackKey_Highlighted: #141414;
 $blackKey_BorderColor: #000000;
 $whiteKey_BorderColor: #AAAAAA;
+$synth_Color_Primary:  #606060;
+$synth_Color_Secondary: #8C8C8C;
+$synth_Color_Tertiary:  #141414;
 
 html{
 	height: 100%;
+    width: 100%;
 }
 
 body{
 	height:           100%;
+    width: 100%;
 	display:          flex;
 	margin:           auto;
 	justify-content:  center;
 	align-items:      center;
 	background-color: #111;
+}
+#root {
+    height:           100%;
+    width: 100%;
+    display:          flex;
+    flex-direction:   column;
+    justify-content:  center;
+    align-items:      center;
+}
+
+#synth-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1em;
+    background-color: $synth_Color_Primary;
+    border: 0.25em solid $synth_Color_Secondary;
 }
 
 .App {
@@ -34,6 +57,7 @@ body{
     align-items: center;
     justify-content: center;
     height: 100%;
+    width: 100%;
 }
 
 .controls {
@@ -82,3 +106,39 @@ body{
 #keyboard > .note:last-child{
 	border-right: $border_Width solid $whiteKey_BorderColor;
 }
+
+input[type="range"]{
+    -webkit-appearance:none;
+    width:160px;
+    height:20px;
+    margin:10px 50px;
+    background: $synth_Color_Secondary;
+    background-size:150px 10px;
+    background-position:center;
+    background-repeat:no-repeat;
+    overflow:hidden;
+    outline: none;
+  }
+  
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:20px;
+    height:20px;
+    background: $synth_Color_Primary;
+    position:relative;
+    z-index:3;
+    box-shadow:0 0 5px 0 rgba(0,0,0,0.3);
+    border: 0.1em solid $synth_Color_Tertiary;
+  }
+  
+  input[type="range"]::-webkit-slider-thumb:after{
+    content:" ";
+    width:160px;
+    height:10px;
+    position:absolute;
+    z-index:1;
+    right:20px;
+    top:5px;
+    background: #ff5b32;
+    background: linear-gradient(to right, #f088fc 1%, #AC6CFF 70%);
+  }
