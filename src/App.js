@@ -15,6 +15,12 @@ function App() {
     const handleMouseDown = (bool) => {
         mouseIsDown = bool;
     }
+    const handleKeyDown = (e, keyboard) => {
+        let key = keyboard.querySelector(`[data-key="${e.key}"]`);
+        if (key !== null) {
+            playNote(key);
+        }
+    }
 
     const playNote = (key) => {
         console.log(key.dataset.note);
@@ -37,6 +43,19 @@ function App() {
     }
     React.useEffect(() => {
         let keyboard = document.getElementById("keyboard");
+
+        window.addEventListener("keydown", function(e){
+            let key = keyboard.querySelector(`[data-key="${e.key}"]`);
+            if (key !== null && e.repeat !== true) {
+                playNote(key);
+            }
+        });
+        window.addEventListener("keyup", function(e){
+            let key = keyboard.querySelector(`[data-key="${e.key}"]`);
+            if (key !== null) {
+                releaseNote(key);
+            }
+        });
         keyboard.ondragstart = function(){return(false)};
         keyboard.addEventListener("mousedown", handleMouseDown(true));
         keyboard.addEventListener("mouseup",   handleMouseDown(false));
@@ -56,77 +75,77 @@ function App() {
                 
             </div>
             <div id="keyboard">
-                <div className="key white c" data-note="C3">
+                <div className="key white c" data-note="C3" data-key="z">
                 </div>
-                <div className="key black c_sharp" data-note="C#3">
+                <div className="key black c_sharp" data-note="C#3" data-key="s">
                 </div>
-                <div className="key white d" data-note="D3">
+                <div className="key white d" data-note="D3" data-key="x">
                 </div>
-                <div className="key black d_sharp" data-note="D#3">
+                <div className="key black d_sharp" data-note="D#3" data-key="d">
                 </div>
-                <div className="key white e" data-note="E3">
+                <div className="key white e" data-note="E3" data-key="c">
                 </div>
-                <div className="key white f" data-note="F3">
+                <div className="key white f" data-note="F3" data-key="v">
                 </div>
-                <div className="key black f_sharp" data-note="F#3">
+                <div className="key black f_sharp" data-note="F#3" data-key="g">
                 </div>
-                <div className="key white g" data-note="G3">
+                <div className="key white g" data-note="G3" data-key="b">
                 </div>
-                <div className="key black g_sharp" data-note="G#3">
+                <div className="key black g_sharp" data-note="G#3" data-key="h">
                 </div>
-                <div className="key white a" data-note="A3">
+                <div className="key white a" data-note="A3" data-key="n">
                 </div>
-                <div className="key black a_sharp" data-note="A#3">
+                <div className="key black a_sharp" data-note="A#3" data-key="j">
                 </div>
-                <div className="key white b" data-note="B3">
+                <div className="key white b" data-note="B3" data-key="m">
                 </div>
-                <div className="key white c" data-note="C4">
+                <div className="key white c" data-note="C4" data-key=",">
                 </div>
-                <div className="key black c_sharp" data-note="C#4">
+                <div className="key black c_sharp" data-note="C#4" data-key="l">
                 </div>
-                <div className="key white d" data-note="D4">
+                <div className="key white d" data-note="D4" data-key=".">
                 </div>
-                <div className="key black d_sharp" data-note="D#4">
+                <div className="key black d_sharp" data-note="D#4" data-key=";">
                 </div>
-                <div className="key white e" data-note="E4">
+                <div className="key white e" data-note="E4" data-key="/">
                 </div>
-                <div className="key white f" data-note="F4">
+                <div className="key white f" data-note="F4" data-key="q">
                 </div>
-                <div className="key black f_sharp" data-note="F#4">
+                <div className="key black f_sharp" data-note="F#4" data-key="2">
                 </div>
-                <div className="key white g" data-note="G4">
+                <div className="key white g" data-note="G4" data-key="w">
                 </div>
-                <div className="key black g_sharp" data-note="G#4">
+                <div className="key black g_sharp" data-note="G#4" data-key="3">
                 </div>
-                <div className="key white a" data-note="A4">
+                <div className="key white a" data-note="A4" data-key="e">
                 </div>
-                <div className="key black a_sharp" data-note="A#4">
+                <div className="key black a_sharp" data-note="A#4" data-key="4">
                 </div>
-                <div className="key white b" data-note="B4">
+                <div className="key white b" data-note="B4" data-key="r">
                 </div>
-                <div className="key white c" data-note="C5">
+                <div className="key white c" data-note="C5" data-key="t">
                 </div>
-                <div className="key black c_sharp" data-note="C#5">
+                <div className="key black c_sharp" data-note="C#5" data-key="6">
                 </div>
-                <div className="key white d" data-note="D5">
+                <div className="key white d" data-note="D5" data-key="y">
                 </div>
-                <div className="key black d_sharp" data-note="D#5">
+                <div className="key black d_sharp" data-note="D#5" data-key="7">
                 </div>
-                <div className="key white e" data-note="E5">
+                <div className="key white e" data-note="E5" data-key="u">
                 </div>
-                <div className="key white f" data-note="F5">
+                <div className="key white f" data-note="F5" data-key="i">
                 </div>
-                <div className="key black f_sharp" data-note="F#5">
+                <div className="key black f_sharp" data-note="F#5" data-key="9">
                 </div>
-                <div className="key white g" data-note="G5">
+                <div className="key white g" data-note="G5" data-key="o">
                 </div>
-                <div className="key black g_sharp" data-note="G#5">
+                <div className="key black g_sharp" data-note="G#5" data-key="0">
                 </div>
-                <div className="key white a" data-note="A5">
+                <div className="key white a" data-note="A5" data-key="p">
                 </div>
-                <div className="key black a_sharp" data-note="A#5">
+                <div className="key black a_sharp" data-note="A#5" data-key="-">
                 </div>
-                <div className="key white b" data-note="B5">
+                <div className="key white b" data-note="B5" data-key="[">
                 </div>
             </div>
         </div>
