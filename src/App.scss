@@ -10,6 +10,8 @@ $blackKey_Offset: (-($blackKey_Width / 2) - $border_Width);
 
 $whiteKey_Color:       #CBCBCB;
 $blackKey_Color:       #222222;
+$whiteKey_Highlighted: #999999;
+$blackKey_Highlighted: #141414;
 $blackKey_BorderColor: #000000;
 $whiteKey_BorderColor: #AAAAAA;
 
@@ -63,6 +65,14 @@ body{
 	z-index:          2;
 	border:           $border_Width solid $blackKey_BorderColor;
 	background-color: $blackKey_Color;
+}
+
+.white-highlighted {
+    background-color: $whiteKey_Highlighted;
+}
+
+.black-highlighted {
+    background-color: $blackKey_Highlighted;
 }
 
 .a, .b, .d, .e, .g, .black{

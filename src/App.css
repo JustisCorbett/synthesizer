@@ -74,6 +74,14 @@ body {
   background-color: #222222;
 }
 
+.white-highlighted {
+  background-color: #999999;
+}
+
+.black-highlighted {
+  background-color: #141414;
+}
+
 .a, .b, .d, .e, .g, .black {
   margin: 0 0 0 -1.16762vw;
 }

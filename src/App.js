@@ -1,29 +1,39 @@
 import * as Tone from 'tone'
 import './App.css';
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 function App() {
     
-    const [synth, setSynth] = useState(new Tone.Synth().toDestination());
+    const [synth, setSynth] = React.useState(new Tone.Synth().toDestination());
     // const [filter, setFilter] = useState(new Tone.Filter());
     // const [reverb, setReverb] = useState(new Tone.Reverb());
     // const [delay, setDelay] = useState(new Tone.FeedbackDelay());
     // const [chorus, setChorus] = useState(new Tone.Chorus());
-    const [octave, setOctave] = useState(3);
+    const [octave, setOctave] = React.useState(3);
 
     let mouseIsDown = false;
     const handleMouseDown = (bool) => {
         mouseIsDown = bool;
     }
 
-    const playNote = (note) => {
-        console.log(note);
+    const playNote = (key) => {
+        console.log(key.dataset.note);
         Tone.start();
-        synth.triggerAttack(note, Tone.now());
+        synth.triggerAttack(key.dataset.note, Tone.now());
+        if (key.classList.contains("white")) {
+            key.classList.add("white-highlighted");
+        } else {
+            key.classList.add("black-highlighted");
+        }
     }
 
-    const releaseNote = (note) => {
+    const releaseNote = (key) => {
         synth.triggerRelease(Tone.now());
+        if (key.classList.contains("white")) {
+            key.classList.remove("white-highlighted");
+        } else {
+            key.classList.remove("black-highlighted");
+        }
     }
     React.useEffect(() => {
         let keyboard = document.getElementById("keyboard");
@@ -32,12 +42,12 @@ function App() {
         keyboard.addEventListener("mouseup",   handleMouseDown(false));
         
         for(let key of keyboard.children){
-            key.addEventListener("mouseover",  function(){if(mouseIsDown) playNote(key.dataset.note)});
-            key.addEventListener("mousedown",  function(){playNote(key.dataset.note); handleMouseDown(true)});
-            key.addEventListener("touchstart", function(){playNote(key.dataset.note)                 });
-            key.addEventListener("mouseleave", function(){releaseNote(key.dataset.note)              });
-            key.addEventListener("mouseup",    function(){releaseNote(key.dataset.note); handleMouseDown(false)});
-            key.addEventListener("touchend",   function(){releaseNote(key.dataset.note)              });
+            key.addEventListener("mouseover",  function(){if(mouseIsDown) playNote(key)});
+            key.addEventListener("mousedown",  function(){playNote(key); handleMouseDown(true)});
+            key.addEventListener("touchstart", function(){playNote(key)                 });
+            key.addEventListener("mouseleave", function(){releaseNote(key)              });
+            key.addEventListener("mouseup",    function(){releaseNote(key); handleMouseDown(false)});
+            key.addEventListener("touchend",   function(){releaseNote(key)              });
         }
     }, [])
     return (
