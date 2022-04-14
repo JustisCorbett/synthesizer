@@ -73,9 +73,17 @@ function App() {
         <div className="App">
             <div id="synth-container">
                 <div className="controls">
-                    <input type="range" value="50"/>
-                    <input type="range" value="0"/>
-                    <input type="range" value="0"/>
+                    <div className="control-container">
+                        <div className="control-label">Volume</div>
+                        <div className="control-row">
+                        <input  id="osc1-gain" type="range" value="50"/>
+                        <label htmlFor="osc1-gain">OSC 1</label>
+                        </div>
+                        <div className="control-row">
+                        <input id="osc2-gain" type="range" value="0"/>
+                        <label htmlFor="osc2-gain">OSC 2</label>
+                        </div>
+                    </div>
                 </div>
                 <div id="keyboard">
                     <div className="key white c" data-note="C3" data-key="z">

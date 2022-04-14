@@ -1,9 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Audiowide&display=swap");
 html {
   height: 100%;
   width: 100%;
 }
 
 body {
+  font-family: "Audiowide", sans-serif;
+  color: #141414;
   height: 100%;
   width: 100%;
   display: -webkit-box;
@@ -91,6 +94,42 @@ body {
   width: 100%;
 }
 
+.control-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: auto;
+  border: 0.15em solid #141414;
+  margin: 0.5em;
+}
+
+.control-row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 100%;
+}
+
 .key {
   float: left;
   position: relative;
@@ -136,6 +175,7 @@ input[type="range"] {
   height: 20px;
   margin: 10px 50px;
   background: #8C8C8C;
+  border: 0.15em solid #AAAAAA;
   background-size: 150px 10px;
   background-position: center;
   background-repeat: no-repeat;

@@ -1,3 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+
+$main_Font: 'Audiowide', sans-serif;
+
 $keyboard_Width:  80vw;
 $keyboard_Height: ($keyboard_Width * 0.18  );
 $border_Width:    ($keyboard_Width * 0.0015);
@@ -24,6 +28,8 @@ html{
 }
 
 body{
+    font-family: $main_Font;
+    color: $synth_Color_Tertiary;
 	height:           100%;
     width: 100%;
 	display:          flex;
@@ -61,6 +67,24 @@ body{
 }
 
 .controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.control-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    border: 0.15em solid $synth_Color_Tertiary;
+    margin:0.5em;
+}
+
+.control-row{
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -113,6 +137,7 @@ input[type="range"]{
     height:20px;
     margin:10px 50px;
     background: $synth_Color_Secondary;
+    border: 0.15em solid $whiteKey_BorderColor;
     background-size:150px 10px;
     background-position:center;
     background-repeat:no-repeat;
