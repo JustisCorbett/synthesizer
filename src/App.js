@@ -12,7 +12,7 @@ function App() {
     const [octave, setOctave] = React.useState(3);
 
     // TODO: visualize waveform
-    //const waveForm = new Tone.Waveform().toDestination();
+    let waveForm = new Tone.Waveform().toDestination();
     
     let mouseIsDown = false;
 
@@ -38,6 +38,8 @@ function App() {
     }
 
     const releaseNote = (key) => {
+        polySynth.triggerRelease(key.dataset.note, Tone.now());
+        // triggerRelease twice to fix bug relating to triggering release on keydown.
         polySynth.triggerRelease(key.dataset.note, Tone.now());
         if (key.classList.contains("white")) {
             key.classList.remove("white-highlighted");
