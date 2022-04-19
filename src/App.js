@@ -4,14 +4,17 @@ import React from "react";
 
 function App() {
     
-    const [synth, setSynth] = React.useState(new Tone.Synth().toDestination());
+    const [polySynth, setPolySynth] = React.useState(new Tone.PolySynth().toDestination());
     // const [filter, setFilter] = useState(new Tone.Filter());
     // const [reverb, setReverb] = useState(new Tone.Reverb());
     // const [delay, setDelay] = useState(new Tone.FeedbackDelay());
     // const [chorus, setChorus] = useState(new Tone.Chorus());
     const [octave, setOctave] = React.useState(3);
 
+    const waveForm = new Tone.Waveform().toDestination();
+    
     let mouseIsDown = false;
+
     const handleMouseDown = (bool) => {
         mouseIsDown = bool;
     }
@@ -24,8 +27,9 @@ function App() {
 
     const playNote = (key) => {
         console.log(key.dataset.note);
+        console.log(waveForm);
         Tone.start();
-        synth.triggerAttack(key.dataset.note, Tone.now());
+        polySynth.triggerAttack(key.dataset.note, Tone.now());
         if (key.classList.contains("white")) {
             key.classList.add("white-highlighted");
         } else {
@@ -34,7 +38,7 @@ function App() {
     }
 
     const releaseNote = (key) => {
-        synth.triggerRelease(Tone.now());
+        polySynth.triggerRelease(key.dataset.note, Tone.now());
         if (key.classList.contains("white")) {
             key.classList.remove("white-highlighted");
         } else {
@@ -69,6 +73,8 @@ function App() {
             key.addEventListener("touchend",   function(){releaseNote(key)              });
         }
     }, [])
+
+
     return (
         <div className="App">
             <div id="synth-container">
