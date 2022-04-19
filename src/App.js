@@ -11,7 +11,8 @@ function App() {
     // const [chorus, setChorus] = useState(new Tone.Chorus());
     const [octave, setOctave] = React.useState(3);
 
-    const waveForm = new Tone.Waveform().toDestination();
+    // TODO: visualize waveform
+    //const waveForm = new Tone.Waveform().toDestination();
     
     let mouseIsDown = false;
 
@@ -27,7 +28,6 @@ function App() {
 
     const playNote = (key) => {
         console.log(key.dataset.note);
-        console.log(waveForm);
         Tone.start();
         polySynth.triggerAttack(key.dataset.note, Tone.now());
         if (key.classList.contains("white")) {
