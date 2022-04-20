@@ -13,12 +13,26 @@ function App() {
 
     // TODO: visualize waveform
     let waveForm = new Tone.Waveform().toDestination();
-    
     let mouseIsDown = false;
+
+
+    const handleOscChange = (e) => {
+        const waves = ["sine", "square", "sawtooth", "triangle"];
+        let wave = waves[e.target.value];
+        setPolySynth(polySynth => {
+            polySynth.set({
+                oscillator: {
+                    type: wave
+                }
+            });
+            return polySynth;
+        })
+    }
 
     const handleMouseDown = (bool) => {
         mouseIsDown = bool;
     }
+
     const handleKeyDown = (e, keyboard) => {
         let key = keyboard.querySelector(`[data-key="${e.key}"]`);
         if (key !== null) {
@@ -82,14 +96,19 @@ function App() {
             <div id="synth-container">
                 <div className="controls">
                     <div className="control-container">
-                        <div className="control-label">Volume</div>
+                        <div className="control-label">OSC</div>
                         <div className="control-row">
-                        <input  id="osc1-gain" type="range" value="50"/>
-                        <label htmlFor="osc1-gain">OSC 1</label>
+                            <input onChange={handleOscChange} id="osc-range" type="range" min="0" max="3"/>
                         </div>
                         <div className="control-row">
-                        <input id="osc2-gain" type="range" value="0"/>
-                        <label htmlFor="osc2-gain">OSC 2</label>
+                            <div>SIN</div>
+                            <div>SQU</div>
+                            <div>SAW</div>
+                            <div>TRI</div>
+                        </div>
+                        <div className="control-row">
+                            <input id="osc2-gain" type="range" value="0"/>
+                            <label htmlFor="osc2-gain">OSC 2</label>
                         </div>
                     </div>
                 </div>
