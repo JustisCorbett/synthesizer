@@ -1,16 +1,32 @@
 import * as Tone from 'tone'
 import './App.css';
-import React from "react";
+import React, { useEffect } from "react";
 
 function App() {
     
-    const [polySynth, setPolySynth] = React.useState(new Tone.PolySynth().toDestination());
+    const [polySynth, setPolySynth] = React.useState(new Tone.PolySynth().toDestination()) ;
+    const [polySynthOptions, updatePolySynthOptions] = React.useReducer(
+        (polySynthOptions, updates) => ({
+            ...polySynthOptions,
+            ...updates,
+        }),
+        {
+        volume: -10,
+        detune: 0,
+        harmonicity: 1,
+        modulationIndex: 0, 
+        oscillator: {type: 'triangle'}, 
+        envelope: {attack: 0.01, decay: 0.01, sustain: 1, release: 0.5}, 
+        modulation: {type: 'square'}, 
+        modulationEnvelope: {attack: 0.5, decay: 0.0, sustain: 1, release: 0.5}
+        });
     // const [filter, setFilter] = useState(new Tone.Filter());
     // const [reverb, setReverb] = useState(new Tone.Reverb());
     // const [delay, setDelay] = useState(new Tone.FeedbackDelay());
     // const [chorus, setChorus] = useState(new Tone.Chorus());
     const [octave, setOctave] = React.useState(3);
 
+    console.log(polySynth);
     // TODO: visualize waveform
     let waveForm = new Tone.Waveform().toDestination();
     let mouseIsDown = false;
@@ -19,14 +35,12 @@ function App() {
     const handleOscChange = (e) => {
         const waves = ["sine", "square", "sawtooth", "triangle"];
         let wave = waves[e.target.value];
-        setPolySynth(polySynth => {
-            polySynth.set({
-                oscillator: {
-                    type: wave
+        updatePolySynthOptions(
+            {
+            oscillator: {
+                type: wave
                 }
             });
-            return polySynth;
-        })
     }
 
     const handleMouseDown = (bool) => {
@@ -89,7 +103,21 @@ function App() {
             key.addEventListener("touchend",   function(){releaseNote(key)              });
         }
     }, [])
-
+    useEffect(() => {
+        setPolySynth(polySynth => {
+            polySynth.set({
+                volume: polySynthOptions.volume,
+                detune: polySynthOptions.detune,
+                harmonicity: polySynthOptions.harmonicity,
+                modulationIndex: polySynthOptions.modulationIndex,
+                oscillator: polySynthOptions.oscillator,
+                envelope: polySynthOptions.envelope,
+                modulation: polySynthOptions.modulation,
+                modulationEnvelope: polySynthOptions.modulationEnvelope
+            });
+            return polySynth;
+        });
+    }, [polySynthOptions,]);
 
     return (
         <div className="App">
