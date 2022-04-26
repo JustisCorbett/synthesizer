@@ -1,8 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Monoton&family=Press+Start+2P&display=swap');
 
 
-$main_Font: 'Audiowide', sans-serif;
+$main_Font: 'Audiowide', cursive;
 $digital_Font: 'Press Start 2P', cursive;
+$monoton_Font: 'Monoton', cursive;
 
 $keyboard_Width:  80vw;
 $keyboard_Height: ($keyboard_Width * 0.18  );
@@ -71,9 +72,10 @@ body{
 .controls {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     width: 100%;
+    flex-wrap: wrap;
 }
 
 .control-container {
@@ -81,9 +83,10 @@ body{
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: auto;
+    width: 225px;
     border: 0.15em solid $synth_Color_Tertiary;
     margin:0.5em;
+    padding: 0.5em;
 }
 
 .control-row{
@@ -95,6 +98,15 @@ body{
     margin: 0.5em;
     margin-left: 2em;
     margin-right: 2em;
+}
+
+.main-label{
+    flex-grow: 1;
+    font-family: $monoton_Font;
+    font-size: 2.5em;
+    color: $synth_Color_Tertiary;
+    height: auto;
+    min-width: 30%;
 }
 
 .key{

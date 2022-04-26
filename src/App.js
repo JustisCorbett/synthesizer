@@ -155,6 +155,7 @@ function App() {
         <div className="App">
             <div id="synth-container">
                 <div className="controls">
+                    <div className="main-label">PolyRetro</div>
                     <div className="control-container">
                         <div className="control-label">OSC</div>
                         <div className="control-row">
