@@ -21,18 +21,18 @@ function App() {
         modulationEnvelope: {attack: 0.5, decay: 0.0, sustain: 1, release: 0.5}
         });
     const [octave, setOctave] = React.useState(0);
+    const octaveRef = React.useRef(octave);
     // const [filter, setFilter] = useState(new Tone.Filter());
     // const [reverb, setReverb] = useState(new Tone.Reverb());
     // const [delay, setDelay] = useState(new Tone.FeedbackDelay());
     // const [chorus, setChorus] = useState(new Tone.Chorus());
 
-    console.log(polySynth);
+    console.log("rerendered");
     // TODO: visualize waveform
     let waveForm = new Tone.Waveform().toDestination();
     let mouseIsDown = false;
-    let octave1 = octave;
 
-
+    // update the synth options when slider changes
     const handleOscChange = (e) => {
         const waves = ["sine", "square", "sawtooth", "triangle"];
         let wave = waves[e.target.value];
@@ -44,6 +44,7 @@ function App() {
             });
     }
 
+    // change octave state when slider is moved
     const handleOctaveChange = (e) => {
         const selection = e.target.value;
         switch (selection) {
@@ -56,13 +57,9 @@ function App() {
             case "2":
                 setOctave(octave => {octave = 5; return octave});
                 break;
-            case "3":
-                setOctave(octave => {octave = 7; return octave});
-                break;
             default :
                 setOctave(octave => 0);
         };
-        console.log(octave);
     }
 
     const handleMouseDown = (bool) => {
@@ -77,10 +74,8 @@ function App() {
     }
 
     const playNote = (key) => {
-        console.log(octave1 + "state");
-        console.log(parseInt(key.dataset.octave));
-        console.log(key.dataset.note + (octave + parseInt(key.dataset.octave)).toString());
-        let note = key.dataset.note + (octave + parseInt(key.dataset.octave)).toString();
+        // need to use a ref to keep track of octave because the state is not updating
+        let note = key.dataset.note + (octaveRef.current + parseInt(key.dataset.octave)).toString();
         Tone.start();
         polySynth.triggerAttack(note, Tone.now());
         if (key.classList.contains("white")) {
@@ -91,7 +86,7 @@ function App() {
     }
 
     const releaseNote = (key) => {
-        let note = key.dataset.note + (octave + parseInt(key.dataset.octave)).toString();
+        let note = key.dataset.note + (octaveRef.current + parseInt(key.dataset.octave)).toString();
         polySynth.triggerRelease(note, Tone.now());
         // triggerRelease twice to fix bug relating to triggering release on keydown.
         polySynth.triggerRelease(note, Tone.now());
@@ -101,6 +96,15 @@ function App() {
             key.classList.remove("black-highlighted");
         }
     }
+
+    // update the octave reference when the octave changes
+    React.useEffect(() => {
+        polySynth.releaseAll(Tone.now());
+        octaveRef.current = octave;
+        console.log(octaveRef.current + "octaveRef");
+    }, [octave]);
+
+    // set up event listeners after the component mounts
     React.useEffect(() => {
         let keyboard = document.getElementById("keyboard");
 
@@ -129,6 +133,8 @@ function App() {
             key.addEventListener("touchend",   function(){releaseNote(key)              });
         }
     }, [])
+
+    // create a new synth when options change
     useEffect(() => {
         setPolySynth(polySynth => {
             polySynth.set({
@@ -152,19 +158,20 @@ function App() {
                     <div className="control-container">
                         <div className="control-label">OSC</div>
                         <div className="control-row">
-                            <input onChange={handleOscChange} id="osc-range" type="range" min="0" max="3"/>
+                            <input onChange={handleOscChange} id="osc-range" type="range" min="0" max="3" defaultValue={3}/>
                         </div>
                         <div className="control-row">
-                            <div>SIN</div>
-                            <div>SQU</div>
-                            <div>SAW</div>
-                            <div>TRI</div>
+                            <div>Waveform</div>
+                            <div>-></div>
+                            <div>{polySynthOptions.oscillator.type}</div>
                         </div>
                         <div className="control-row">
-                            <input onChange={handleOctaveChange} id="octave" type="range" min="0" max="3"/>
+                            <input onChange={handleOctaveChange} id="octave" type="range" min="0" max="2" defaultValue={0}/>
                         </div>
                         <div className="control-row">
                             <div>Octave</div>
+                            <div>-></div>
+                            <div id="octaveVal">{octave}</div>
                         </div>
                     </div>
                 </div>
