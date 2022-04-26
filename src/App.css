@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Audiowide&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Audiowide&family=Press+Start+2P&display=swap");
 html {
   height: 100%;
   width: 100%;
@@ -169,6 +169,25 @@ body {
 
 #keyboard > .note:last-child {
   border-right: 0.12vw solid #AAAAAA;
+}
+
+.display {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  font-family: "Press Start 2P", cursive;
+  background-color: #141414;
+  color: #CBCBCB;
+  border: 0.15em solid #8C8C8C;
+  padding: 0.5em;
+  height: auto;
+  width: 50%;
 }
 
 input[type="range"] {

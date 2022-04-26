@@ -161,17 +161,15 @@ function App() {
                             <input onChange={handleOscChange} id="osc-range" type="range" min="0" max="3" defaultValue={3}/>
                         </div>
                         <div className="control-row">
-                            <div>Waveform</div>
-                            <div>-></div>
-                            <div>{polySynthOptions.oscillator.type}</div>
+                            <div>Waveform </div>
+                            <div class="display">{polySynthOptions.oscillator.type}</div>
                         </div>
                         <div className="control-row">
                             <input onChange={handleOctaveChange} id="octave" type="range" min="0" max="2" defaultValue={0}/>
                         </div>
                         <div className="control-row">
                             <div>Octave</div>
-                            <div>-></div>
-                            <div id="octaveVal">{octave}</div>
+                            <div class="display" id="octaveVal">{octave}</div>
                         </div>
                     </div>
                 </div>

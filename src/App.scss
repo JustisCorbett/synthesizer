@@ -1,6 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Press+Start+2P&display=swap');
+
 
 $main_Font: 'Audiowide', sans-serif;
+$digital_Font: 'Press Start 2P', cursive;
 
 $keyboard_Width:  80vw;
 $keyboard_Height: ($keyboard_Width * 0.18  );
@@ -132,6 +134,19 @@ body{
 
 #keyboard > .note:last-child{
 	border-right: $border_Width solid $whiteKey_BorderColor;
+}
+
+.display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: $digital_Font;
+    background-color: $blackKey_Highlighted;
+    color: $whiteKey_Color;
+    border: 0.15em solid $synth_Color_Secondary;
+    padding: 0.5em;
+    height: auto;
+    width: 50%;
 }
 
 input[type="range"]{
