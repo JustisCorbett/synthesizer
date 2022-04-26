@@ -103,10 +103,27 @@ body{
 .main-label{
     flex-grow: 1;
     font-family: $monoton_Font;
-    font-size: 2.5em;
+    font-size: 3em;
+    font-weight: 550;
     color: $synth_Color_Tertiary;
     height: auto;
     min-width: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: left;
+}
+
+.sub-label{
+    font-family: $main_Font;
+    font-size: 0.35em;
+    font-weight: 400;
+    color: $synth_Color_Tertiary;
+    height: auto;
+}
+
+#keyboard{
+    border: 0.15em solid $synth_Color_Tertiary;
 }
 
 .key{

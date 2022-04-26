@@ -140,10 +140,36 @@ body {
       -ms-flex-positive: 1;
           flex-grow: 1;
   font-family: "Monoton", cursive;
-  font-size: 2.5em;
+  font-size: 3em;
+  font-weight: 550;
   color: #141414;
   height: auto;
   min-width: 30%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-pack: left;
+      -ms-flex-pack: left;
+          justify-content: left;
+}
+
+.sub-label {
+  font-family: "Audiowide", cursive;
+  font-size: 0.35em;
+  font-weight: 400;
+  color: #141414;
+  height: auto;
+}
+
+#keyboard {
+  border: 0.15em solid #141414;
 }
 
 .key {
