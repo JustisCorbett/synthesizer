@@ -134,7 +134,7 @@ function App() {
         }
     }, [])
 
-    // create a new synth when options change
+    // set synth options when options change
     useEffect(() => {
         setPolySynth(polySynth => {
             polySynth.set({
