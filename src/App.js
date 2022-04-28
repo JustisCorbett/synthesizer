@@ -7,7 +7,6 @@ function App() {
     //const [polySynth, setPolySynth] = React.useState(new Tone.PolySynth().toDestination()) ;
     const [polySynthOptions, updatePolySynthOptions] = React.useReducer(
         (state, action) => {
-            console.log("redudcer")
             switch (action.type) {
                 case "synth":
                     return {
@@ -15,7 +14,6 @@ function App() {
                         ...action.payload
                     }
                 case "oscillator":
-                    console.log(state.oscillator, action.payload)
                     return {
                         ...state,
                         oscillator: {
@@ -50,7 +48,6 @@ function App() {
     // const [delay, setDelay] = useState(new Tone.FeedbackDelay());
     // const [chorus, setChorus] = useState(new Tone.Chorus());
 
-    console.log("rerendered");
     // TODO: visualize waveform
     let waveForm = new Tone.Waveform().toDestination();
     let mouseIsDown = false;
@@ -87,7 +84,6 @@ function App() {
     }
 
     const handleVolumeChange = (e) => {
-        console.log("volume change");
         updatePolySynthOptions(
             {
             type: "synth",
@@ -166,7 +162,6 @@ function App() {
     React.useEffect(() => {
         polySynth.current.releaseAll(Tone.now());
         octaveRef.current = octave;
-        console.log(octaveRef.current + "octaveRef");
     }, [octave]);
 
     // set up event listeners after the component mounts
@@ -208,7 +203,6 @@ function App() {
             oscillator: polySynthOptions.oscillator,
             envelope: polySynthOptions.envelope,
         });
-        console.log(polySynth);
     }, [polySynthOptions,]);
 
     return (
