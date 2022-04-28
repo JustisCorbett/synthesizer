@@ -237,7 +237,7 @@ function App() {
                         </div>
                         <div className="control-row">
                             <div>Waveform </div>
-                            <div className="display">{polySynthOptions.oscillator.type}</div>
+                            <div className="display">{polySynthOptions.oscillator.type.slice(3)}</div>
                         </div>
                         <div className="control-row">
                             <input onChange={handleCountChange} id="count-range" type="range" min="1" max="5" step={1} defaultValue={polySynthOptions.oscillator.count}/>
