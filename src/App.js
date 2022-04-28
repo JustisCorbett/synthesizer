@@ -4,24 +4,38 @@ import React, { useEffect } from "react";
 
 function App() {
     
-    const [polySynth, setPolySynth] = React.useState(new Tone.PolySynth().toDestination()) ;
+    //const [polySynth, setPolySynth] = React.useState(new Tone.PolySynth().toDestination()) ;
     const [polySynthOptions, updatePolySynthOptions] = React.useReducer(
-        (polySynthOptions, updates) => ({
-            ...polySynthOptions,
-            ...updates,
-        }),
+        (state, action) => {
+            switch (action.type) {
+                case "synth":
+                    return {
+                        ...state,
+                        ...action.payload
+                    }
+                case "oscillator":
+                    return {
+                        ...state.oscillator,
+                        ...action.payload.oscillator
+                    }
+                case "envelope":
+                    return {
+                        ...state.envelope,
+                        ...action.payload.envelope
+                    }
+                default:
+                    return state
+            }
+        },
         {
         volume: -10,
-        detune: 0,
-        harmonicity: 1,
-        modulationIndex: 0, 
-        oscillator: {type: 'triangle'}, 
+        detune: 0, 
+        oscillator: {type: 'fatsine', count: 1, spread: 0}, 
         envelope: {attack: 0.01, decay: 0.01, sustain: 1, release: 0.5}, 
-        modulation: {type: 'square'}, 
-        modulationEnvelope: {attack: 0.5, decay: 0.0, sustain: 1, release: 0.5}
         });
     const [octave, setOctave] = React.useState(0);
     const octaveRef = React.useRef(octave);
+    const polySynth = React.useRef(new Tone.PolySynth().toDestination());
     // const [filter, setFilter] = useState(new Tone.Filter());
     // const [reverb, setReverb] = useState(new Tone.Reverb());
     // const [delay, setDelay] = useState(new Tone.FeedbackDelay());
@@ -34,14 +48,19 @@ function App() {
 
     // update the synth options when slider changes
     const handleOscChange = (e) => {
-        const waves = ["sine", "square", "sawtooth", "triangle"];
+        const waves = ["fatsine", "fatsquare", "fatsawtooth", "fattriangle"];
         let wave = waves[e.target.value];
         updatePolySynthOptions(
             {
-            oscillator: {
-                type: wave
+            action: {
+                type: "oscillator",
+                payload: {
+                    oscillator: {
+                        type: wave
+                    }
                 }
-            });
+            }
+        });
     }
 
     // change octave state when slider is moved
@@ -62,6 +81,58 @@ function App() {
         };
     }
 
+    const handleVolumeChange = (e) => {
+        updatePolySynthOptions(
+            {
+            action: {
+                type: "synth",
+                payload: {
+                    volume: e.target.value
+                }
+            }
+        });
+
+    const handleSpreadChange = (e) => {
+        updatePolySynthOptions(
+            {
+            action: {
+                type: "oscillator",
+                payload: {
+                    oscillator: {
+                        spread: e.target.value
+                    }
+                }
+            }
+        });
+    }
+
+    const handleAttackChange = (e) => {
+        updatePolySynthOptions(
+            {
+            action: {
+                type: "oscillator",
+                payload: {
+                    oscillator: {
+                        type: wave
+                    }
+                }
+            }
+        });
+    }
+
+    const handleCountChange = (e) => {
+        updatePolySynthOptions(
+            {
+            action: {
+                type: "oscillator",
+                payload: {
+                    oscillator: {
+                        type: wave
+                    }
+                }
+            }
+        });
+
     const handleMouseDown = (bool) => {
         mouseIsDown = bool;
     }
@@ -77,7 +148,7 @@ function App() {
         // need to use a ref to keep track of octave because the state is not updating
         let note = key.dataset.note + (octaveRef.current + parseInt(key.dataset.octave)).toString();
         Tone.start();
-        polySynth.triggerAttack(note, Tone.now());
+        polySynth.current.triggerAttack(note, Tone.now());
         if (key.classList.contains("white")) {
             key.classList.add("white-highlighted");
         } else {
@@ -87,9 +158,9 @@ function App() {
 
     const releaseNote = (key) => {
         let note = key.dataset.note + (octaveRef.current + parseInt(key.dataset.octave)).toString();
-        polySynth.triggerRelease(note, Tone.now());
+        polySynth.current.triggerRelease(note, Tone.now());
         // triggerRelease twice to fix bug relating to triggering release on keydown.
-        polySynth.triggerRelease(note, Tone.now());
+        polySynth.current.triggerRelease(note, Tone.now());
         if (key.classList.contains("white")) {
             key.classList.remove("white-highlighted");
         } else {
@@ -99,7 +170,7 @@ function App() {
 
     // update the octave reference when the octave changes
     React.useEffect(() => {
-        polySynth.releaseAll(Tone.now());
+        polySynth.current.releaseAll(Tone.now());
         octaveRef.current = octave;
         console.log(octaveRef.current + "octaveRef");
     }, [octave]);
@@ -136,19 +207,15 @@ function App() {
 
     // set synth options when options change
     useEffect(() => {
-        setPolySynth(polySynth => {
-            polySynth.set({
-                volume: polySynthOptions.volume,
-                detune: polySynthOptions.detune,
-                harmonicity: polySynthOptions.harmonicity,
-                modulationIndex: polySynthOptions.modulationIndex,
-                oscillator: polySynthOptions.oscillator,
-                envelope: polySynthOptions.envelope,
-                modulation: polySynthOptions.modulation,
-                modulationEnvelope: polySynthOptions.modulationEnvelope
-            });
-            return polySynth;
+        polySynth.current.releaseAll(Tone.now());
+        polySynth.current.set({
+            volume: polySynthOptions.volume,
+            detune: polySynthOptions.detune,
+            harmonicity: polySynthOptions.harmonicity,
+            oscillator: polySynthOptions.oscillator,
+            envelope: polySynthOptions.envelope,
         });
+        console.log(polySynth);
     }, [polySynthOptions,]);
 
     return (
@@ -160,20 +227,44 @@ function App() {
                         <div className="sub-label">Created by Justis Corbett</div>
                     </div>
                     <div className="control-container">
-                        <div className="control-label">OSC</div>
+                        <div className="control-label">Master</div>
                         <div className="control-row">
-                            <input onChange={handleOscChange} id="osc-range" type="range" min="0" max="3" defaultValue={3}/>
+                            <input onChange={handleVolumeChange} id="vol-range" type="range" min="-50" max="0" defaultValue={polySynthOptions.volume}/>
                         </div>
                         <div className="control-row">
-                            <div>Waveform </div>
-                            <div class="display">{polySynthOptions.oscillator.type}</div>
+                            <div>Volume</div>
+                            <div className="display">{polySynthOptions.volume}</div>
                         </div>
                         <div className="control-row">
                             <input onChange={handleOctaveChange} id="octave" type="range" min="0" max="2" defaultValue={0}/>
                         </div>
                         <div className="control-row">
                             <div>Octave</div>
-                            <div class="display" id="octaveVal">{octave}</div>
+                            <div className="display" id="octaveVal">{octave}</div>
+                        </div>
+                    </div>
+                    <div className="control-container">
+                        <div className="control-label">OSC</div>
+                        <div className="control-row">
+                            <input onChange={handleOscChange} id="osc-range" type="range" min="0" max="3" defaultValue={0}/>
+                        </div>
+                        <div className="control-row">
+                            <div>Waveform </div>
+                            <div className="display">{polySynthOptions.oscillator.type}</div>
+                        </div>
+                        <div className="control-row">
+                            <input onChange={handleCountChange} id="count-range" type="range" min="1" max="5" step={1} defaultValue={polySynthOptions.oscillator.count}/>
+                        </div>
+                        <div className="control-row">
+                            <div>Count</div>
+                            <div className="display">{polySynthOptions.oscillator.count}</div>
+                        </div>
+                        <div className="control-row">
+                            <input onChange={handleSpreadChange} id="spread-range" type="range" min="0" max="100" step={1} defaultValue={polySynthOptions.oscillator.spread}/>
+                        </div>
+                        <div className="control-row">
+                            <div>Spread</div>
+                            <div className="display">{polySynthOptions.oscillator.spread}</div>
                         </div>
                     </div>
                 </div>
