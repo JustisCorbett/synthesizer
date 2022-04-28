@@ -36,7 +36,7 @@ function App() {
         {
             volume: -10,
             detune: 0, 
-            oscillator: {type: 'fatsine', count: 1, spread: 0}, 
+            oscillator: {type: 'fatsine', count: 1, spread: 10}, 
             envelope: {attack: 0.01, decay: 0.01, sustain: 1, release: 0.5}, 
         });
 
@@ -247,74 +247,90 @@ function App() {
                     </div>
                     <div className="control-container">
                         <div className="control-label">Master</div>
-                        <div className="control-row">
-                            <input onChange={handleVolumeChange} id="vol-range" type="range" min="-50" max="0" defaultValue={polySynthOptions.volume}/>
-                        </div>
-                        <div className="control-row">
-                            <div>Volume</div>
-                            <div className="display">{polySynthOptions.volume}</div>
-                        </div>
-                        <div className="control-row">
-                            <input onChange={handleOctaveChange} id="octave" type="range" min="0" max="2" defaultValue={0}/>
-                        </div>
-                        <div className="control-row">
-                            <div>Octave</div>
-                            <div className="display" id="octaveVal">{octave}</div>
+                        <div className="control-main-row">
+                            <div className="control-col">
+                                <div className="control-row">
+                                    <input onChange={handleVolumeChange} id="vol-range" type="range" min="-50" max="0" defaultValue={polySynthOptions.volume}/>
+                                </div>
+                                <div className="control-row">
+                                    <div>Volume</div>
+                                    <div className="display">{polySynthOptions.volume}</div>
+                                </div>
+                                <div className="control-row">
+                                    <input onChange={handleOctaveChange} id="octave" type="range" min="0" max="2" defaultValue={0}/>
+                                </div>
+                                <div className="control-row">
+                                    <div>Octave</div>
+                                    <div className="display" id="octaveVal">{octave}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className="control-container">
                         <div className="control-label">OSC</div>
-                        <div className="control-row">
-                            <input onChange={handleOscChange} id="osc-range" type="range" min="0" max="3" defaultValue={0}/>
-                        </div>
-                        <div className="control-row">
-                            <div>Waveform </div>
-                            <div className="display">{polySynthOptions.oscillator.type.slice(3)}</div>
-                        </div>
-                        <div className="control-row">
-                            <input onChange={handleCountChange} id="count-range" type="range" min="1" max="5" step={1} defaultValue={polySynthOptions.oscillator.count}/>
-                        </div>
-                        <div className="control-row">
-                            <div>Count</div>
-                            <div className="display">{polySynthOptions.oscillator.count}</div>
-                        </div>
-                        <div className="control-row">
-                            <input onChange={handleSpreadChange} id="spread-range" type="range" min="1" max="100" step={1} defaultValue={polySynthOptions.oscillator.spread}/>
-                        </div>
-                        <div className="control-row">
-                            <div>Spread</div>
-                            <div className="display">{polySynthOptions.oscillator.spread}</div>
+                        <div className="control-main-row">
+                            <div className="control-col">
+                                <div className="control-row">
+                                    <input onChange={handleOscChange} id="osc-range" type="range" min="0" max="3" defaultValue={0}/>
+                                </div>
+                                <div className="control-row">
+                                    <div>Waveform </div>
+                                    <div className="display">{polySynthOptions.oscillator.type.slice(3)}</div>
+                                </div>
+                                <div className="control-row">
+                                    <input onChange={handleCountChange} id="count-range" type="range" min="1" max="5" step={1} defaultValue={polySynthOptions.oscillator.count}/>
+                                </div>
+                                <div className="control-row">
+                                    <div>Count</div>
+                                    <div className="display">{polySynthOptions.oscillator.count}</div>
+                                </div>
+                            </div>
+                            <div className="control-col">
+                                <div className="control-row">
+                                    <input onChange={handleSpreadChange} id="spread-range" type="range" min="1" max="100" step={1} defaultValue={polySynthOptions.oscillator.spread}/>
+                                </div>
+                                <div className="control-row">
+                                    <div>Spread</div>
+                                    <div className="display">{polySynthOptions.oscillator.spread}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className="control-container">
                         <div className="control-label">ENV</div>
-                        <div className="control-row">
-                            <input onChange={handleAttackChange} id="attack-range" type="range" min="0" max="5" step="0.01" defaultValue={polySynthOptions.envelope.attack}/>
-                        </div>
-                        <div className="control-row">
-                            <div>Attack</div>
-                            <div className="display">{polySynthOptions.envelope.attack}</div>
-                        </div>
-                        <div className="control-row">
-                            <input onChange={handleDecayChange} id="count-range" type="range" min="0" max="5" step={0.01} defaultValue={polySynthOptions.envelope.decay}/>
-                        </div>
-                        <div className="control-row">
-                            <div>Decay</div>
-                            <div className="display">{polySynthOptions.envelope.decay}</div>
-                        </div>
-                        <div className="control-row">
-                            <input onChange={handleSustainChange} id="spread-range" type="range" min="0" max="1" step={0.01} defaultValue={polySynthOptions.envelope.sustain}/>
-                        </div>
-                        <div className="control-row">
-                            <div>Sustain</div>
-                            <div className="display">{polySynthOptions.envelope.sustain}</div>
-                        </div>
-                        <div className="control-row">
-                            <input onChange={handleReleaseChange} id="spread-range" type="range" min="0" max="5" step={0.01} defaultValue={polySynthOptions.envelope.release}/>
-                        </div>
-                        <div className="control-row">
-                            <div>Release</div>
-                            <div className="display">{polySynthOptions.envelope.release}</div>
+                        <div className="control-main-row">
+                            <div className="control-col">
+                                <div className="control-row">
+                                    <input onChange={handleAttackChange} id="attack-range" type="range" min="0" max="5" step="0.1" defaultValue={polySynthOptions.envelope.attack}/>
+                                </div>
+                                <div className="control-row">
+                                    <div>Attack</div>
+                                    <div className="display">{polySynthOptions.envelope.attack}</div>
+                                </div>
+                                <div className="control-row">
+                                    <input onChange={handleDecayChange} id="count-range" type="range" min="0.1" max="5" step={0.1} defaultValue={polySynthOptions.envelope.decay}/>
+                                </div>
+                                <div className="control-row">
+                                    <div>Decay</div>
+                                    <div className="display">{polySynthOptions.envelope.decay}</div>
+                                </div>
+                            </div>
+                            <div className="control-col">
+                                <div className="control-row">
+                                    <input onChange={handleSustainChange} id="sustain-range" type="range" min="0.1" max="1" step={0.1} defaultValue={polySynthOptions.envelope.sustain}/>
+                                </div>
+                                <div className="control-row">
+                                    <div>Sustain</div>
+                                    <div className="display">{polySynthOptions.envelope.sustain}</div>
+                                </div>
+                                <div className="control-row">
+                                    <input onChange={handleReleaseChange} id="release-range" type="range" min="0" max="10" step={0.1} defaultValue={polySynthOptions.envelope.release}/>
+                                </div>
+                                <div className="control-row">
+                                    <div>Release</div>
+                                    <div className="display">{polySynthOptions.envelope.release}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

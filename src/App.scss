@@ -83,10 +83,19 @@ body{
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 225px;
+    min-width: 225px;
+    max-width: 500px;
     border: 0.15em solid $synth_Color_Tertiary;
     margin:0.5em;
-    padding: 0.5em;
+}
+
+.control-main-row{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    border-top: 0.15em solid $synth_Color_Tertiary;
 }
 
 .control-row{
@@ -95,9 +104,18 @@ body{
     align-items: center;
     justify-content: space-between;
     width: 100%;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.control-col{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 255px;
     margin: 0.5em;
-    margin-left: 2em;
-    margin-right: 2em;
 }
 
 .main-label{
@@ -107,7 +125,6 @@ body{
     font-weight: 550;
     color: $synth_Color_Tertiary;
     height: auto;
-    min-width: 30%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
