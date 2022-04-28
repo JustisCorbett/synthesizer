@@ -7,6 +7,7 @@ function App() {
     //const [polySynth, setPolySynth] = React.useState(new Tone.PolySynth().toDestination()) ;
     const [polySynthOptions, updatePolySynthOptions] = React.useReducer(
         (state, action) => {
+            console.log("redudcer")
             switch (action.type) {
                 case "synth":
                     return {
@@ -14,25 +15,33 @@ function App() {
                         ...action.payload
                     }
                 case "oscillator":
+                    console.log(state.oscillator, action.payload)
                     return {
-                        ...state.oscillator,
-                        ...action.payload.oscillator
+                        ...state,
+                        oscillator: {
+                            ...state.oscillator,
+                            ...action.payload
+                        }
                     }
                 case "envelope":
                     return {
-                        ...state.envelope,
-                        ...action.payload.envelope
+                        ...state,
+                        envelope: {
+                            ...state.envelope,
+                            ...action.payload
+                        }
                     }
                 default:
                     return state
             }
         },
         {
-        volume: -10,
-        detune: 0, 
-        oscillator: {type: 'fatsine', count: 1, spread: 0}, 
-        envelope: {attack: 0.01, decay: 0.01, sustain: 1, release: 0.5}, 
+            volume: -10,
+            detune: 0, 
+            oscillator: {type: 'fatsine', count: 1, spread: 0}, 
+            envelope: {attack: 0.01, decay: 0.01, sustain: 1, release: 0.5}, 
         });
+
     const [octave, setOctave] = React.useState(0);
     const octaveRef = React.useRef(octave);
     const polySynth = React.useRef(new Tone.PolySynth().toDestination());
@@ -52,13 +61,9 @@ function App() {
         let wave = waves[e.target.value];
         updatePolySynthOptions(
             {
-            action: {
-                type: "oscillator",
-                payload: {
-                    oscillator: {
-                        type: wave
-                    }
-                }
+            type: "oscillator",
+            payload: {
+                type: wave
             }
         });
     }
@@ -82,26 +87,22 @@ function App() {
     }
 
     const handleVolumeChange = (e) => {
+        console.log("volume change");
         updatePolySynthOptions(
             {
-            action: {
-                type: "synth",
-                payload: {
-                    volume: e.target.value
-                }
+            type: "synth",
+            payload: {
+                volume: parseInt(e.target.value)
             }
         });
+    }
 
     const handleSpreadChange = (e) => {
         updatePolySynthOptions(
             {
-            action: {
-                type: "oscillator",
-                payload: {
-                    oscillator: {
-                        spread: e.target.value
-                    }
-                }
+            type: "oscillator",
+            payload: {
+                spread: parseInt(e.target.value)
             }
         });
     }
@@ -109,13 +110,9 @@ function App() {
     const handleAttackChange = (e) => {
         updatePolySynthOptions(
             {
-            action: {
-                type: "oscillator",
-                payload: {
-                    oscillator: {
-                        type: wave
-                    }
-                }
+            type: "oscillator",
+            payload: {
+                type: parseInt(e.target.value)
             }
         });
     }
@@ -123,15 +120,12 @@ function App() {
     const handleCountChange = (e) => {
         updatePolySynthOptions(
             {
-            action: {
-                type: "oscillator",
-                payload: {
-                    oscillator: {
-                        type: wave
-                    }
-                }
+            type: "oscillator",
+            payload: {
+                count: parseInt(e.target.value)
             }
         });
+    }
 
     const handleMouseDown = (bool) => {
         mouseIsDown = bool;
@@ -211,7 +205,6 @@ function App() {
         polySynth.current.set({
             volume: polySynthOptions.volume,
             detune: polySynthOptions.detune,
-            harmonicity: polySynthOptions.harmonicity,
             oscillator: polySynthOptions.oscillator,
             envelope: polySynthOptions.envelope,
         });
