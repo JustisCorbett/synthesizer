@@ -77,6 +77,26 @@ body {
   width: 100%;
 }
 
+.top-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  width: 80vw;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  margin-bottom: 1.25em;
+}
+
 .controls {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -88,10 +108,9 @@ body {
   -webkit-box-align: start;
       -ms-flex-align: start;
           align-items: flex-start;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  width: 100%;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
 }
@@ -195,6 +214,7 @@ body {
   -webkit-box-pack: left;
       -ms-flex-pack: left;
           justify-content: left;
+  margin-bottom: 0.5em;
 }
 
 .sub-label {
