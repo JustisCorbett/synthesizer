@@ -108,7 +108,7 @@ function App() {
             {
             type: "envelope",
             payload: {
-                attack: parseInt(e.target.value)
+                attack: parseInt(e.target.value) / 100
             }
         });
     }
@@ -118,7 +118,7 @@ function App() {
             {
             type: "envelope",
             payload: {
-                decay: parseInt(e.target.value)
+                decay: parseInt(e.target.value) / 100
             }
         });
     }
@@ -128,7 +128,7 @@ function App() {
             {
             type: "envelope",
             payload: {
-                sustain: parseInt(e.target.value)
+                sustain: parseInt(e.target.value) / 100
             }
         });
     }
@@ -138,7 +138,7 @@ function App() {
             {
             type: "envelope",
             payload: {
-                release: parseInt(e.target.value)
+                release: parseInt(e.target.value) / 100
             }
         });
     }
@@ -302,14 +302,14 @@ function App() {
                             <div className="control-main-row">
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input onChange={handleAttackChange} id="attack-range" type="range" min="0" max="5" step="0.1" defaultValue={polySynthOptions.envelope.attack}/>
+                                        <input onChange={handleAttackChange} id="attack-range" type="range" min="0" max="500" step={10} defaultValue={polySynthOptions.envelope.attack * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Attack</div>
                                         <div className="display">{polySynthOptions.envelope.attack}</div>
                                     </div>
                                     <div className="control-row">
-                                        <input onChange={handleDecayChange} id="count-range" type="range" min="0.1" max="5" step={0.1} defaultValue={polySynthOptions.envelope.decay}/>
+                                        <input onChange={handleDecayChange} id="count-range" type="range" min="10" max="500" step={10} defaultValue={polySynthOptions.envelope.decay * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Decay</div>
@@ -318,14 +318,14 @@ function App() {
                                 </div>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input onChange={handleSustainChange} id="sustain-range" type="range" min="0.1" max="1" step={0.1} defaultValue={polySynthOptions.envelope.sustain}/>
+                                        <input onChange={handleSustainChange} id="sustain-range" type="range" min="10" max="100" step={10} defaultValue={polySynthOptions.envelope.sustain * 100}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Sustain</div>
                                         <div className="display">{polySynthOptions.envelope.sustain}</div>
                                     </div>
                                     <div className="control-row">
-                                        <input onChange={handleReleaseChange} id="release-range" type="range" min="0" max="10" step={0.1} defaultValue={polySynthOptions.envelope.release}/>
+                                        <input onChange={handleReleaseChange} id="release-range" type="range" min="0" max="500" step={10} defaultValue={polySynthOptions.envelope.release * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Release</div>
