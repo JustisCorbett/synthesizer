@@ -42,14 +42,17 @@ function App() {
 
     const [octave, setOctave] = React.useState(0);
     const octaveRef = React.useRef(octave);
-    const polySynth = React.useRef(new Tone.PolySynth().toDestination());
+    const feedbackDelay = React.useRef(new Tone.FeedbackDelay("8n", 0.5).toDestination());
+    const chorus = React.useRef(new Tone.Chorus(4, 2.5, 0.5).toDestination().start());
+    const reverb = React.useRef(new Tone.Freeverb(0.5, 0.5).toDestination());
+    const polySynth = React.useRef(new Tone.PolySynth().chain(feedbackDelay.current, chorus.current, reverb.current).toDestination());
     // const [filter, setFilter] = useState(new Tone.Filter());
     // const [reverb, setReverb] = useState(new Tone.Reverb());
     // const [delay, setDelay] = useState(new Tone.FeedbackDelay());
     // const [chorus, setChorus] = useState(new Tone.Chorus());
 
     // TODO: visualize waveform
-    let waveForm = new Tone.Waveform().toDestination();
+    //let waveForm = new Tone.Waveform().toDestination();
     let mouseIsDown = false;
 
     // update the synth options when slider changes
@@ -153,21 +156,25 @@ function App() {
         });
     }
 
-    const handleMouseDown = (bool) => {
-        mouseIsDown = bool;
+    const handleDelayTimeChange = (e) => {
+        feedbackDelay.current.delayTime.value = parseInt(e.target.value);
     }
 
-    const handleKeyDown = (e, keyboard) => {
-        let key = keyboard.querySelector(`[data-key="${e.key}"]`);
-        if (key !== null) {
-            playNote(key);
-        }
+    const handleDelayFeedbackChange = (e) => {
+        feedbackDelay.current.feedback.value = parseInt(e.target.value) / 100;
+    }
+
+    const handleDelayWetChange = (e) => {
+        feedbackDelay.current.wet.value = parseInt(e.target.value) / 100;
+    }
+
+    const handleMouseDown = (bool) => {
+        mouseIsDown = bool;
     }
 
     const playNote = (key) => {
         // need to use a ref to keep track of octave because the state is not updating
         let note = key.dataset.note + (octaveRef.current + parseInt(key.dataset.octave)).toString();
-        Tone.start();
         polySynth.current.triggerRelease(note, Tone.now());
         polySynth.current.triggerAttack(note, Tone.now());
         if (key.classList.contains("white")) {
@@ -227,8 +234,11 @@ function App() {
 
     // set synth options when options change
     useEffect(() => {
-        polySynth.current.dispose();
-        polySynth.current = new Tone.PolySynth().toDestination();
+        console.log(Tone.getContext());
+        //polySynth.current.releaseAll(Tone.now());
+        //polySynth.current.dispose();
+        //console.log(polySynth.current.disposed);
+        //polySynth.current = new Tone.PolySynth().chain(feedbackDelay.current, chorus.current, reverb.current).toDestination();
         polySynth.current.set({
             volume: polySynthOptions.volume,
             detune: polySynthOptions.detune,
@@ -319,6 +329,43 @@ function App() {
                                 <div className="control-col">
                                     <div className="control-row">
                                         <input onChange={handleSustainChange} id="sustain-range" type="range" min="10" max="100" step={10} defaultValue={polySynthOptions.envelope.sustain * 100}/>
+                                    </div>
+                                    <div className="control-row">
+                                        <div>Sustain</div>
+                                        <div className="display">{polySynthOptions.envelope.sustain}</div>
+                                    </div>
+                                    <div className="control-row">
+                                        <input onChange={handleReleaseChange} id="release-range" type="range" min="0" max="500" step={10} defaultValue={polySynthOptions.envelope.release * 10}/>
+                                    </div>
+                                    <div className="control-row">
+                                        <div>Release</div>
+                                        <div className="display">{polySynthOptions.envelope.release}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="control-container">
+                            <div className="control-label">Delay</div>
+                            <div className="control-main-row">
+                                <div className="control-col">
+                                    <div className="control-row">
+                                        <input onChange={handleDelayTimeChange} type="range" min="0" max="500" step={10} defaultValue={polySynthOptions.envelope.attack * 10}/>
+                                    </div>
+                                    <div className="control-row">
+                                        <div>Attack</div>
+                                        <div className="display">{polySynthOptions.envelope.attack}</div>
+                                    </div>
+                                    <div className="control-row">
+                                        <input onChange={handleDelayFeedbackChange} id="count-range" type="range" min="10" max="500" step={10} defaultValue={polySynthOptions.envelope.decay * 10}/>
+                                    </div>
+                                    <div className="control-row">
+                                        <div>Decay</div>
+                                        <div className="display">{polySynthOptions.envelope.decay}</div>
+                                    </div>
+                                </div>
+                                <div className="control-col">
+                                    <div className="control-row">
+                                        <input onChange={handleDelayWetChange} id="sustain-range" type="range" min="10" max="100" step={10} defaultValue={polySynthOptions.envelope.sustain * 100}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Sustain</div>
