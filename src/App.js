@@ -54,7 +54,7 @@ function App() {
 
     // TODO: visualize waveform
     //let waveForm = new Tone.Waveform().toDestination();
-    let mouseIsDown = false;
+    
 
     // update the synth options when slider changes
     const handleOscChange = (e) => {
@@ -165,10 +165,6 @@ function App() {
         delay.current.wet.value = parseInt(e.target.value) / 100;
     }
 
-    const handleMouseDown = (bool) => {
-        mouseIsDown = bool;
-    }
-
     const playNote = (key) => {
         // need to use a ref to keep track of octave because the state is not updating
         let note = key.dataset.note + (octaveRef.current + parseInt(key.dataset.octave)).toString();
@@ -202,40 +198,53 @@ function App() {
 
     // set up event listeners after the component mounts
     React.useEffect(() => {
+        
         let keyboard = document.getElementById("keyboard");
+        let mouseIsDown = false;
 
-        window.addEventListener("keydown", function(e){
+        const handleMouse = () => {
+            if (mouseIsDown) {
+                mouseIsDown = false;
+            } else {
+                mouseIsDown = true;
+            }
+        }
+    
+        const handleKeyDown = (e) => {
             let key = keyboard.querySelector(`[data-key="${e.key}"]`);
             if (key !== null && e.repeat !== true) {
                 playNote(key);
             }
-        });
-        window.addEventListener("keyup", function(e){
+        }
+    
+        const handleKeyUp = (e) => {
             let key = keyboard.querySelector(`[data-key="${e.key}"]`);
             if (key !== null) {
                 releaseNote(key);
             }
-        });
+        }
+
+        window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("keyup", handleKeyUp);
+
         keyboard.ondragstart = function(){return(false)};
-        keyboard.addEventListener("mousedown", handleMouseDown(true));
-        keyboard.addEventListener("mouseup",   handleMouseDown(false));
+        keyboard.addEventListener("mousedown", handleMouse);
+        keyboard.addEventListener("mouseup",   handleMouse);
         
         for(let key of keyboard.children){
             key.addEventListener("mouseover",  function(){if(mouseIsDown) playNote(key)});
-            key.addEventListener("mousedown",  function(){playNote(key); handleMouseDown(true)});
+            key.addEventListener("mousedown",  function(){playNote(key); handleMouse()});
             key.addEventListener("touchstart", function(){playNote(key)                 });
             key.addEventListener("mouseleave", function(){releaseNote(key)              });
-            key.addEventListener("mouseup",    function(){releaseNote(key); handleMouseDown(false)});
+            key.addEventListener("mouseup",    function(){releaseNote(key); handleMouse()});
             key.addEventListener("touchend",   function(){releaseNote(key)              });
         }
     }, [])
 
     // set synth options when options change
     useEffect(() => {
-        console.log(Tone.getContext());
         polySynth.current.releaseAll(Tone.now());
         polySynth.current.dispose();
-        console.log(polySynth.current);
         polySynth.current = new Tone.PolySynth().chain(delay.current, chorus.current, reverb.current, filter.current , volume.current).toDestination();
         polySynth.current.set({
             volume: polySynthOptions.volume,
@@ -243,7 +252,6 @@ function App() {
             oscillator: polySynthOptions.oscillator,
             envelope: polySynthOptions.envelope,
         });
-        console.log(polySynth.current);
     }, [polySynthOptions,]);
 
     return (
