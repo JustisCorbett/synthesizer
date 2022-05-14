@@ -39,13 +39,13 @@ function App() {
             envelope: {attack: 0.1, decay: 0.1, sustain: 1, release: 0.5}, 
         });
 
-    const [octave, setOctave] = React.useState(0);
-    const octaveRef = React.useRef(octave);
-    const delay = React.useRef(new Tone.FeedbackDelay("8n", 0.5).toDestination());
-    const chorus = React.useRef(new Tone.Chorus(4, 2.5, 0.5).start().toDestination());
-    const reverb = React.useRef(new Tone.Freeverb(0.5, 0.5).toDestination());
+    //const [octave, setOctave] = React.useState(0);
+    const octaveRef = React.useRef(0);
+    //const delay = React.useRef(new Tone.FeedbackDelay("8n", 0.5).toDestination());
+    //const chorus = React.useRef(new Tone.Chorus(4, 2.5, 0.5).start().toDestination());
+    //const reverb = React.useRef(new Tone.Freeverb(0.5, 0.5).toDestination());
     const volume = React.useRef(new Tone.Volume(0).toDestination());
-    const filter = React.useRef(new Tone.Filter(440, "lowpass").toDestination());
+    //const filter = React.useRef(new Tone.Filter(440, "lowpass").toDestination());
     const polySynth = React.useRef(new Tone.PolySynth().toDestination());
     // const [filter, setFilter] = useState(new Tone.Filter());
     // const [reverb, setReverb] = useState(new Tone.Reverb());
@@ -62,17 +62,17 @@ function App() {
 
     
 
-    const handleDelayTimeChange = (e) => {
-        delay.current.delayTime.value = parseInt(e.target.value);
-    }
+    // const handleDelayTimeChange = (e) => {
+    //     delay.current.delayTime.value = parseInt(e.target.value);
+    // }
 
-    const handleDelayFeedbackChange = (e) => {
-        delay.current.feedback.value = parseInt(e.target.value) / 100;
-    }
+    // const handleDelayFeedbackChange = (e) => {
+    //     delay.current.feedback.value = parseInt(e.target.value) / 100;
+    // }
 
-    const handleDelayWetChange = (e) => {
-        delay.current.wet.value = parseInt(e.target.value) / 100;
-    }
+    // const handleDelayWetChange = (e) => {
+    //     delay.current.wet.value = parseInt(e.target.value) / 100;
+    // }
 
     const playNote = (key) => {
         // need to use a ref to keep track of octave because the state is not updating
@@ -100,10 +100,10 @@ function App() {
     }
 
     // update the octave reference when the octave changes
-    React.useEffect(() => {
-        polySynth.current.releaseAll(Tone.now());
-        octaveRef.current = octave;
-    }, [octave]);
+    // React.useEffect(() => {
+    //     polySynth.current.releaseAll(Tone.now());
+    //     octaveRef.current = octave;
+    // }, [octave]);
 
     // set up event listeners after the component mounts
     React.useEffect(() => {
@@ -138,16 +138,20 @@ function App() {
             const selection = e.target.value;
             switch (selection) {
                 case "0":
-                    setOctave(octave => {octave = 0; return octave});
+                    //setOctave(octave => {octave = 0; return octave});
+                    octaveRef.current = 0;
                     break;
                 case "1":
-                    setOctave(octave => {octave = 3; return octave});
+                    //setOctave(octave => {octave = 3; return octave});
+                    octaveRef.current = 3;
                     break;
                 case "2":
-                    setOctave(octave => {octave = 5; return octave});
+                    //setOctave(octave => {octave = 5; return octave});
+                    octaveRef.current = 5;
                     break;
                 default :
-                    setOctave(octave => 0);
+                    //setOctave(octave => 0);
+                    octaveRef.current = 0;
             };
         }
 
@@ -282,8 +286,8 @@ function App() {
     // set synth options when options change
     useEffect(() => {
         polySynth.current.releaseAll(Tone.now());
-        //polySynth.current.dispose();
-        //polySynth.current = new Tone.PolySynth().chain(delay.current, chorus.current, reverb.current, filter.current , volume.current).toDestination();
+        polySynth.current.dispose();
+        polySynth.current = new Tone.PolySynth().toDestination();
         polySynth.current.set({
             volume: polySynthOptions.volume,
             detune: polySynthOptions.detune,
@@ -317,7 +321,7 @@ function App() {
                                     </div>
                                     <div className="control-row">
                                         <div>Octave</div>
-                                        <div className="display" id="octaveVal">{octave}</div>
+                                        <div className="display" id="octaveVal">{octaveRef.current}</div>
                                     </div>
                                 </div>
                             </div>
