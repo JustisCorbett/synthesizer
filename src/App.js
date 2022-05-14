@@ -56,102 +56,11 @@ function App() {
     //let waveForm = new Tone.Waveform().toDestination();
     
 
-    // update the synth options when slider changes
-    const handleOscChange = (e) => {
-        const waves = ["fatsine", "fatsquare", "fatsawtooth", "fattriangle"];
-        let wave = waves[e.target.value];
-        updatePolySynthOptions(
-            {
-            type: "oscillator",
-            payload: {
-                type: wave
-            }
-        });
-    }
+    
 
-    // change octave state when slider is moved
-    const handleOctaveChange = (e) => {
-        const selection = e.target.value;
-        switch (selection) {
-            case "0":
-                setOctave(octave => {octave = 0; return octave});
-                break;
-            case "1":
-                setOctave(octave => {octave = 3; return octave});
-                break;
-            case "2":
-                setOctave(octave => {octave = 5; return octave});
-                break;
-            default :
-                setOctave(octave => 0);
-        };
-    }
+    
 
-    const handleVolumeChange = (e) => {
-        volume.current.set({
-            volume : e.target.value
-        });
-    }
-
-    const handleSpreadChange = (e) => {
-        updatePolySynthOptions(
-            {
-            type: "oscillator",
-            payload: {
-                spread: parseInt(e.target.value)
-            }
-        });
-    }
-
-    const handleAttackChange = (e) => {
-        updatePolySynthOptions(
-            {
-            type: "envelope",
-            payload: {
-                attack: parseInt(e.target.value) / 100
-            }
-        });
-    }
-
-    const handleDecayChange = (e) => {
-        updatePolySynthOptions(
-            {
-            type: "envelope",
-            payload: {
-                decay: parseInt(e.target.value) / 100
-            }
-        });
-    }
-
-    const handleSustainChange = (e) => {
-        updatePolySynthOptions(
-            {
-            type: "envelope",
-            payload: {
-                sustain: parseInt(e.target.value) / 100
-            }
-        });
-    }
-
-    const handleReleaseChange = (e) => {
-        updatePolySynthOptions(
-            {
-            type: "envelope",
-            payload: {
-                release: parseInt(e.target.value) / 100
-            }
-        });
-    }
-
-    const handleCountChange = (e) => {
-        updatePolySynthOptions(
-            {
-            type: "oscillator",
-            payload: {
-                count: parseInt(e.target.value)
-            }
-        });
-    }
+    
 
     const handleDelayTimeChange = (e) => {
         delay.current.delayTime.value = parseInt(e.target.value);
@@ -198,17 +107,116 @@ function App() {
 
     // set up event listeners after the component mounts
     React.useEffect(() => {
-        
-        let keyboard = document.getElementById("keyboard");
-        let mouseIsDown = false;
 
-        const handleMouse = () => {
-            if (mouseIsDown) {
-                mouseIsDown = false;
-            } else {
-                mouseIsDown = true;
-            }
+        let keyboard = document.getElementById("keyboard");
+
+        let octaveRange = document.getElementById("octave-range");
+        let volumeRange = document.getElementById("volume-range");
+        let oscRange = document.getElementById("osc-range");
+        let spreadRange = document.getElementById("spread-range");
+        let attackRange = document.getElementById("attack-range");
+        let decayRange = document.getElementById("decay-range");
+        let sustainRange = document.getElementById("sustain-range");
+        let releaseRange = document.getElementById("release-range");
+        let countRange = document.getElementById("count-range");
+
+        // update the synth options when slider changes
+        const handleOscChange = (e) => {
+            const waves = ["fatsine", "fatsquare", "fatsawtooth", "fattriangle"];
+            let wave = waves[e.target.value];
+            updatePolySynthOptions(
+                {
+                type: "oscillator",
+                payload: {
+                    type: wave
+                }
+            });
         }
+
+        // change octave state when slider is moved
+        const handleOctaveChange = (e) => {
+            const selection = e.target.value;
+            switch (selection) {
+                case "0":
+                    setOctave(octave => {octave = 0; return octave});
+                    break;
+                case "1":
+                    setOctave(octave => {octave = 3; return octave});
+                    break;
+                case "2":
+                    setOctave(octave => {octave = 5; return octave});
+                    break;
+                default :
+                    setOctave(octave => 0);
+            };
+        }
+
+        const handleVolumeChange = (e) => {
+            volume.current.set({
+                volume : e.target.value
+            });
+        }
+    
+        const handleSpreadChange = (e) => {
+            updatePolySynthOptions(
+                {
+                type: "oscillator",
+                payload: {
+                    spread: parseInt(e.target.value)
+                }
+            });
+        }
+    
+        const handleAttackChange = (e) => {
+            updatePolySynthOptions(
+                {
+                type: "envelope",
+                payload: {
+                    attack: parseInt(e.target.value) / 100
+                }
+            });
+        }
+    
+        const handleDecayChange = (e) => {
+            updatePolySynthOptions(
+                {
+                type: "envelope",
+                payload: {
+                    decay: parseInt(e.target.value) / 100
+                }
+            });
+        }
+    
+        const handleSustainChange = (e) => {
+            updatePolySynthOptions(
+                {
+                type: "envelope",
+                payload: {
+                    sustain: parseInt(e.target.value) / 100
+                }
+            });
+        }
+    
+        const handleReleaseChange = (e) => {
+            updatePolySynthOptions(
+                {
+                type: "envelope",
+                payload: {
+                    release: parseInt(e.target.value) / 100
+                }
+            });
+        }
+    
+        const handleCountChange = (e) => {
+            updatePolySynthOptions(
+                {
+                type: "oscillator",
+                payload: {
+                    count: parseInt(e.target.value)
+                }
+            });
+        }
+
     
         const handleKeyDown = (e) => {
             let key = keyboard.querySelector(`[data-key="${e.key}"]`);
@@ -224,28 +232,58 @@ function App() {
             }
         }
 
+        octaveRange.addEventListener("change", handleOctaveChange);
+        volumeRange.addEventListener("change", handleVolumeChange);
+        oscRange.addEventListener("change", handleOscChange);
+        spreadRange.addEventListener("change", handleSpreadChange);
+        attackRange.addEventListener("change", handleAttackChange);
+        decayRange.addEventListener("change", handleDecayChange);
+        sustainRange.addEventListener("change", handleSustainChange);
+        releaseRange.addEventListener("change", handleReleaseChange);
+        countRange.addEventListener("change", handleCountChange);
+
         window.addEventListener("keydown", handleKeyDown);
         window.addEventListener("keyup", handleKeyUp);
-
-        keyboard.ondragstart = function(){return(false)};
-        keyboard.addEventListener("mousedown", handleMouse);
-        keyboard.addEventListener("mouseup",   handleMouse);
         
         for(let key of keyboard.children){
-            key.addEventListener("mouseover",  function(){if(mouseIsDown) playNote(key)});
-            key.addEventListener("mousedown",  function(){playNote(key); handleMouse()});
+            key.addEventListener("mousedown",  function(){playNote(key)});
             key.addEventListener("touchstart", function(){playNote(key)                 });
             key.addEventListener("mouseleave", function(){releaseNote(key)              });
-            key.addEventListener("mouseup",    function(){releaseNote(key); handleMouse()});
+            key.addEventListener("mouseup",    function(){releaseNote(key)});
             key.addEventListener("touchend",   function(){releaseNote(key)              });
         }
+
+        return () => {
+            octaveRange.removeEventListener("change", handleOctaveChange);
+            volumeRange.removeEventListener("change", handleVolumeChange);
+            oscRange.removeEventListener("change", handleOscChange);
+            spreadRange.removeEventListener("change", handleSpreadChange);
+            attackRange.removeEventListener("change", handleAttackChange);
+            decayRange.removeEventListener("change", handleDecayChange);
+            sustainRange.removeEventListener("change", handleSustainChange);
+            releaseRange.removeEventListener("change", handleReleaseChange);
+            countRange.removeEventListener("change", handleCountChange);
+
+            window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("keyup", handleKeyUp);
+
+            for(let key of keyboard.children){
+                
+                key.removeEventListener("mousedown",  function(){playNote(key)});
+                key.removeEventListener("touchstart", function(){playNote(key)                 });
+                key.removeEventListener("mouseleave", function(){releaseNote(key)              });
+                key.removeEventListener("mouseup",    function(){releaseNote(key)});
+                key.removeEventListener("touchend",   function(){releaseNote(key)              });
+            }
+        }
+
     }, [])
 
     // set synth options when options change
     useEffect(() => {
         polySynth.current.releaseAll(Tone.now());
-        polySynth.current.dispose();
-        polySynth.current = new Tone.PolySynth().chain(delay.current, chorus.current, reverb.current, filter.current , volume.current).toDestination();
+        //polySynth.current.dispose();
+        //polySynth.current = new Tone.PolySynth().chain(delay.current, chorus.current, reverb.current, filter.current , volume.current).toDestination();
         polySynth.current.set({
             volume: polySynthOptions.volume,
             detune: polySynthOptions.detune,
@@ -268,14 +306,14 @@ function App() {
                             <div className="control-main-row">
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input onMouseUp={handleVolumeChange} id="vol-range" type="range" min="-50" max="0" defaultValue={volume.current.volume.value}/>
+                                        <input id="volume-range" type="range" min="-50" max="0" defaultValue={volume.current.volume.value}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Volume</div>
                                         <div className="display">{volume.current.volume.value}</div>
                                     </div>
                                     <div className="control-row">
-                                        <input onMouseUp={handleOctaveChange} id="octave" type="range" min="0" max="2" defaultValue={0}/>
+                                        <input id="octave-range" type="range" min="0" max="2" defaultValue={0}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Octave</div>
@@ -289,14 +327,14 @@ function App() {
                             <div className="control-main-row">
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input onMouseUp={handleOscChange} id="osc-range" type="range" min="0" max="3" defaultValue={0}/>
+                                        <input id="osc-range" type="range" min="0" max="3" defaultValue={0}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Waveform </div>
                                         <div className="display">{polySynthOptions.oscillator.type.slice(3)}</div>
                                     </div>
                                     <div className="control-row">
-                                        <input onMouseUp={handleCountChange} id="count-range" type="range" min="1" max="3" step={1} defaultValue={polySynthOptions.oscillator.count}/>
+                                        <input id="count-range" type="range" min="1" max="3" step={1} defaultValue={polySynthOptions.oscillator.count}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Count</div>
@@ -305,7 +343,7 @@ function App() {
                                 </div>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input onMouseUp={handleSpreadChange} id="spread-range" type="range" min="1" max="100" step={1} defaultValue={polySynthOptions.oscillator.spread}/>
+                                        <input id="spread-range" type="range" min="1" max="100" step={1} defaultValue={polySynthOptions.oscillator.spread}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Spread</div>
@@ -319,14 +357,14 @@ function App() {
                             <div className="control-main-row">
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input onMouseUp={handleAttackChange} id="attack-range" type="range" min="0" max="500" step={10} defaultValue={polySynthOptions.envelope.attack * 10}/>
+                                        <input id="attack-range" type="range" min="0" max="500" step={10} defaultValue={polySynthOptions.envelope.attack * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Attack</div>
                                         <div className="display">{polySynthOptions.envelope.attack}</div>
                                     </div>
                                     <div className="control-row">
-                                        <input onMouseUp={handleDecayChange} id="count-range" type="range" min="10" max="500" step={10} defaultValue={polySynthOptions.envelope.decay * 10}/>
+                                        <input id="decay-range" type="range" min="10" max="500" step={10} defaultValue={polySynthOptions.envelope.decay * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Decay</div>
@@ -335,14 +373,14 @@ function App() {
                                 </div>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input onMouseUp={handleSustainChange} id="sustain-range" type="range" min="10" max="100" step={10} defaultValue={polySynthOptions.envelope.sustain * 100}/>
+                                        <input id="sustain-range" type="range" min="10" max="100" step={10} defaultValue={polySynthOptions.envelope.sustain * 100}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Sustain</div>
                                         <div className="display">{polySynthOptions.envelope.sustain}</div>
                                     </div>
                                     <div className="control-row">
-                                        <input onMouseUp={handleReleaseChange} id="release-range" type="range" min="0" max="500" step={10} defaultValue={polySynthOptions.envelope.release * 10}/>
+                                        <input id="release-range" type="range" min="0" max="500" step={10} defaultValue={polySynthOptions.envelope.release * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Release</div>
@@ -356,14 +394,14 @@ function App() {
                             <div className="control-main-row">
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input onMouseUp={handleDelayTimeChange} type="range" min="0" max="500" step={10} defaultValue={polySynthOptions.envelope.attack * 10}/>
+                                        <input id="delay-time-range" type="range" min="0" max="500" step={10} defaultValue={polySynthOptions.envelope.attack * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Attack</div>
                                         <div className="display">{polySynthOptions.envelope.attack}</div>
                                     </div>
                                     <div className="control-row">
-                                        <input onMouseUp={handleDelayFeedbackChange} id="count-range" type="range" min="10" max="500" step={10} defaultValue={polySynthOptions.envelope.decay * 10}/>
+                                        <input id="delay-feed-range" type="range" min="10" max="500" step={10} defaultValue={polySynthOptions.envelope.decay * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Decay</div>
@@ -372,18 +410,11 @@ function App() {
                                 </div>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input onMouseUp={handleDelayWetChange} id="sustain-range" type="range" min="10" max="100" step={10} defaultValue={polySynthOptions.envelope.sustain * 100}/>
+                                        <input id="delay-wet-range" type="range" min="10" max="100" step={10} defaultValue={polySynthOptions.envelope.sustain * 100}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Sustain</div>
                                         <div className="display">{polySynthOptions.envelope.sustain}</div>
-                                    </div>
-                                    <div className="control-row">
-                                        <input onMouseUp={handleReleaseChange} id="release-range" type="range" min="0" max="500" step={10} defaultValue={polySynthOptions.envelope.release * 10}/>
-                                    </div>
-                                    <div className="control-row">
-                                        <div>Release</div>
-                                        <div className="display">{polySynthOptions.envelope.release}</div>
                                     </div>
                                 </div>
                             </div>
