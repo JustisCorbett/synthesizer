@@ -62,7 +62,7 @@ function App() {
             }
         },
         {
-            time: "8n",
+            delayTime: 0.5,
             feedback: 0.5,
             wet: 0.5
         });
@@ -328,9 +328,7 @@ function App() {
             updateDelayOptions(
                 {
                 type: "time",
-                payload: {
-                    delayTime: parseInt(e.target.value) / 100
-                }
+                payload: parseInt(e.target.value) / 100
             });
         }
         
@@ -338,9 +336,7 @@ function App() {
             updateDelayOptions(
                 {
                 type: "feedback",
-                payload: {
-                    feedback: parseInt(e.target.value) / 100
-                }
+                payload: parseInt(e.target.value) / 100
             });
         }
 
@@ -348,9 +344,7 @@ function App() {
             updateDelayOptions(
                 {
                 type: "wet",
-                payload: {
-                    wet: parseInt(e.target.value) / 100
-                }
+                payload: parseInt(e.target.value) / 100
             });
         }
 
@@ -491,14 +485,14 @@ function App() {
                             <div className="control-main-row">
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="delay-time-range" type="range" min="0" max="500" step={10} defaultValue={polySynthOptions.envelope.attack * 10}/>
+                                        <input id="delay-time-range" type="range" min="10" max="500" step={10} defaultValue={delayOptions.time * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Attack</div>
                                         <div className="display">{polySynthOptions.envelope.attack}</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="delay-feed-range" type="range" min="10" max="500" step={10} defaultValue={polySynthOptions.envelope.decay * 10}/>
+                                        <input id="delay-feed-range" type="range" min="10" max="500" step={10} defaultValue={delayOptions.feedback * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Decay</div>
@@ -507,7 +501,7 @@ function App() {
                                 </div>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="delay-wet-range" type="range" min="10" max="100" step={10} defaultValue={polySynthOptions.envelope.sustain * 100}/>
+                                        <input id="delay-wet-range" type="range" min="10" max="100" step={10} defaultValue={delayOptions.wet * 100}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Sustain</div>
