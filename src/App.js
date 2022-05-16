@@ -39,9 +39,38 @@ function App() {
             envelope: {attack: 0.1, decay: 0.1, sustain: 1, release: 0.5}, 
         });
 
+    const [delayOptions, updateDelayOptions] = React.useReducer(
+        (state, action) => {
+            switch (action.type) {
+                case "time":
+                    return {
+                        ...state,
+                        time: action.payload
+                    }
+                case "feedback":
+                    return {
+                        ...state,
+                        feedback: action.payload
+                    }
+                case "wet":
+                    return {
+                        ...state,
+                        wet: action.payload
+                    }
+                default:
+                    return state
+            }
+        },
+        {
+            time: "8n",
+            feedback: 0.5,
+            wet: 0.5
+        });
+
+
     //const [octave, setOctave] = React.useState(0);
     const octaveRef = React.useRef(0);
-    //const delay = React.useRef(new Tone.FeedbackDelay("8n", 0.5).toDestination());
+    const delay = React.useRef(new Tone.FeedbackDelay("8n", 0.5).toDestination());
     //const chorus = React.useRef(new Tone.Chorus(4, 2.5, 0.5).start().toDestination());
     //const reverb = React.useRef(new Tone.Freeverb(0.5, 0.5).toDestination());
     const volume = React.useRef(new Tone.Volume(0).toDestination());
@@ -74,30 +103,7 @@ function App() {
     //     delay.current.wet.value = parseInt(e.target.value) / 100;
     // }
 
-    const playNote = (key) => {
-        // need to use a ref to keep track of octave because the state is not updating
-        let note = key.dataset.note + (octaveRef.current + parseInt(key.dataset.octave)).toString();
-        polySynth.current.triggerRelease(note, Tone.now());
-        polySynth.current.triggerAttack(note, Tone.now());
-        console.log(polySynth.current.activeVoices);
-        if (key.classList.contains("white")) {
-            key.classList.add("white-highlighted");
-        } else {
-            key.classList.add("black-highlighted");
-        }
-    }
-
-    const releaseNote = (key) => {
-        let note = key.dataset.note + (octaveRef.current + parseInt(key.dataset.octave)).toString();
-        polySynth.current.triggerRelease(note, Tone.now());
-        // triggerRelease twice to fix bug relating to triggering release on keydown.
-        polySynth.current.triggerRelease(note, Tone.now());
-        if (key.classList.contains("white")) {
-            key.classList.remove("white-highlighted");
-        } else {
-            key.classList.remove("black-highlighted");
-        }
-    }
+    
 
     // update the octave reference when the octave changes
     // React.useEffect(() => {
@@ -105,10 +111,77 @@ function App() {
     //     octaveRef.current = octave;
     // }, [octave]);
 
-    // set up event listeners after the component mounts
+    // set up listeners for playing notes
     React.useEffect(() => {
+        let keyboard = document.querySelector(".keyboard");
 
-        let keyboard = document.getElementById("keyboard");
+        const playNote = (key) => {
+            // need to use a ref to keep track of octave because the state is not updating
+            let note = key.dataset.note + (octaveRef.current + parseInt(key.dataset.octave)).toString();
+            polySynth.current.triggerRelease(note, Tone.now());
+            polySynth.current.triggerAttack(note, Tone.now());
+            console.log(polySynth.current.activeVoices);
+            if (key.classList.contains("white")) {
+                key.classList.add("white-highlighted");
+            } else {
+                key.classList.add("black-highlighted");
+            }
+        }
+    
+        const releaseNote = (key) => {
+            let note = key.dataset.note + (octaveRef.current + parseInt(key.dataset.octave)).toString();
+            polySynth.current.triggerRelease(note, Tone.now());
+            // triggerRelease twice to fix bug relating to triggering release on keydown.
+            polySynth.current.triggerRelease(note, Tone.now());
+            if (key.classList.contains("white")) {
+                key.classList.remove("white-highlighted");
+            } else {
+                key.classList.remove("black-highlighted");
+            }
+        }
+
+        const handleKeyDown = (e) => {
+            let key = keyboard.querySelector(`[data-key="${e.key}"]`);
+            if (key !== null && e.repeat !== true) {
+                playNote(key);
+            }
+        }
+    
+        const handleKeyUp = (e) => {
+            let key = keyboard.querySelector(`[data-key="${e.key}"]`);
+            if (key !== null) {
+                releaseNote(key);
+            }
+        }
+
+        window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("keyup", handleKeyUp);
+        
+        for(let key of keyboard.children){
+            key.addEventListener("mousedown",  function(){playNote(key)});
+            key.addEventListener("touchstart", function(){playNote(key)                 });
+            key.addEventListener("mouseleave", function(){releaseNote(key)              });
+            key.addEventListener("mouseup",    function(){releaseNote(key)});
+            key.addEventListener("touchend",   function(){releaseNote(key)              });
+        }
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("keyup", handleKeyUp);
+
+            for(let key of keyboard.children){
+                
+                key.removeEventListener("mousedown",  function(){playNote(key)});
+                key.removeEventListener("touchstart", function(){playNote(key)                 });
+                key.removeEventListener("mouseleave", function(){releaseNote(key)              });
+                key.removeEventListener("mouseup",    function(){releaseNote(key)});
+                key.removeEventListener("touchend",   function(){releaseNote(key)              });
+            }
+        }
+    }, []);
+
+    // set up event listeners for oscillator options, and update the oscillator options
+    React.useEffect(() => {
 
         let octaveRange = document.getElementById("octave-range");
         let volumeRange = document.getElementById("volume-range");
@@ -221,21 +294,6 @@ function App() {
             });
         }
 
-    
-        const handleKeyDown = (e) => {
-            let key = keyboard.querySelector(`[data-key="${e.key}"]`);
-            if (key !== null && e.repeat !== true) {
-                playNote(key);
-            }
-        }
-    
-        const handleKeyUp = (e) => {
-            let key = keyboard.querySelector(`[data-key="${e.key}"]`);
-            if (key !== null) {
-                releaseNote(key);
-            }
-        }
-
         octaveRange.addEventListener("change", handleOctaveChange);
         volumeRange.addEventListener("change", handleVolumeChange);
         oscRange.addEventListener("change", handleOscChange);
@@ -245,17 +303,6 @@ function App() {
         sustainRange.addEventListener("change", handleSustainChange);
         releaseRange.addEventListener("change", handleReleaseChange);
         countRange.addEventListener("change", handleCountChange);
-
-        window.addEventListener("keydown", handleKeyDown);
-        window.addEventListener("keyup", handleKeyUp);
-        
-        for(let key of keyboard.children){
-            key.addEventListener("mousedown",  function(){playNote(key)});
-            key.addEventListener("touchstart", function(){playNote(key)                 });
-            key.addEventListener("mouseleave", function(){releaseNote(key)              });
-            key.addEventListener("mouseup",    function(){releaseNote(key)});
-            key.addEventListener("touchend",   function(){releaseNote(key)              });
-        }
 
         return () => {
             octaveRange.removeEventListener("change", handleOctaveChange);
@@ -267,23 +314,60 @@ function App() {
             sustainRange.removeEventListener("change", handleSustainChange);
             releaseRange.removeEventListener("change", handleReleaseChange);
             countRange.removeEventListener("change", handleCountChange);
-
-            window.removeEventListener("keydown", handleKeyDown);
-            window.removeEventListener("keyup", handleKeyUp);
-
-            for(let key of keyboard.children){
-                
-                key.removeEventListener("mousedown",  function(){playNote(key)});
-                key.removeEventListener("touchstart", function(){playNote(key)                 });
-                key.removeEventListener("mouseleave", function(){releaseNote(key)              });
-                key.removeEventListener("mouseup",    function(){releaseNote(key)});
-                key.removeEventListener("touchend",   function(){releaseNote(key)              });
-            }
         }
 
     }, [])
 
-    // set synth options when options change
+    // set up event listeners for delay option changes, and update delay options
+    React.useEffect(() => {
+        let delayTimeRange = document.getElementById("delay-time-range");
+        let delayFeedbackRange = document.getElementById("delay-feedback-range");
+        let delayWetRange = document.getElementById("delay-wet-range");
+
+        const handleDelayTimeChange = (e) => {
+            updateDelayOptions(
+                {
+                type: "time",
+                payload: {
+                    delayTime: parseInt(e.target.value) / 100
+                }
+            });
+        }
+        
+        const handleDelayFeedbackChange = (e) => {
+            updateDelayOptions(
+                {
+                type: "feedback",
+                payload: {
+                    feedback: parseInt(e.target.value) / 100
+                }
+            });
+        }
+
+        const handleDelayWetChange = (e) => {
+            updateDelayOptions(
+                {
+                type: "wet",
+                payload: {
+                    wet: parseInt(e.target.value) / 100
+                }
+            });
+        }
+
+        delayTimeRange.addEventListener("change", handleDelayTimeChange);
+        delayFeedbackRange.addEventListener("change", handleDelayFeedbackChange);
+        delayWetRange.addEventListener("change", handleDelayWetChange);
+
+        return () => {
+            delayTimeRange.removeEventListener("change", handleDelayTimeChange);
+            delayFeedbackRange.removeEventListener("change", handleDelayFeedbackChange);
+            delayWetRange.removeEventListener("change", handleDelayWetChange);
+        }
+
+    }, [])
+
+
+    // create new synth with updated synth options
     useEffect(() => {
         polySynth.current.releaseAll(Tone.now());
         polySynth.current.dispose();
@@ -295,6 +379,15 @@ function App() {
             envelope: polySynthOptions.envelope,
         });
     }, [polySynthOptions,]);
+
+    // create new delay with updated delay options
+    useEffect(() => {
+        delay.current.dispose();
+        delay.current = new Tone.FeedbackDelay(delayOptions.delayTime, delayOptions.feedback).toDestination();
+        delay.current.set({
+            wet: delayOptions.wet
+        });
+    }, [delayOptions,]);
 
     return (
         <div className="App">
