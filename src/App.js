@@ -68,7 +68,7 @@ function App() {
         });
 
 
-    //const [octave, setOctave] = React.useState(0);
+    const [octave, setOctave] = React.useState(0);
     const octaveRef = React.useRef(0);
     const delay = React.useRef(new Tone.FeedbackDelay("8n", 0.5).toDestination());
     //const chorus = React.useRef(new Tone.Chorus(4, 2.5, 0.5).start().toDestination());
@@ -113,11 +113,12 @@ function App() {
 
     // set up listeners for playing notes
     React.useEffect(() => {
-        let keyboard = document.querySelector(".keyboard");
+        let keyboard = document.getElementById("keyboard");
 
         const playNote = (key) => {
             // need to use a ref to keep track of octave because the state is not updating
             let note = key.dataset.note + (octaveRef.current + parseInt(key.dataset.octave)).toString();
+            console.log(octaveRef.current);
             polySynth.current.triggerRelease(note, Tone.now());
             polySynth.current.triggerAttack(note, Tone.now());
             console.log(polySynth.current.activeVoices);
@@ -211,20 +212,16 @@ function App() {
             const selection = e.target.value;
             switch (selection) {
                 case "0":
-                    //setOctave(octave => {octave = 0; return octave});
-                    octaveRef.current = 0;
+                    setOctave(0);
                     break;
                 case "1":
-                    //setOctave(octave => {octave = 3; return octave});
-                    octaveRef.current = 3;
+                    setOctave(3);
                     break;
                 case "2":
-                    //setOctave(octave => {octave = 5; return octave});
-                    octaveRef.current = 5;
+                    setOctave(5);
                     break;
                 default :
-                    //setOctave(octave => 0);
-                    octaveRef.current = 0;
+                    setOctave(0);
             };
         }
 
@@ -360,6 +357,11 @@ function App() {
 
     }, [])
 
+    // set octave state
+    React.useEffect(() => {
+        polySynth.current.releaseAll();
+        octaveRef.current = octave;
+    }, [octave, ])
 
     // create new synth with updated synth options
     useEffect(() => {
@@ -372,7 +374,8 @@ function App() {
             oscillator: polySynthOptions.oscillator,
             envelope: polySynthOptions.envelope,
         });
-    }, [polySynthOptions,]);
+        console.log(polySynth.current.context);
+    }, [polySynthOptions, ]);
 
     // create new delay with updated delay options
     useEffect(() => {
@@ -381,6 +384,7 @@ function App() {
         delay.current.set({
             wet: delayOptions.wet
         });
+        console.log(delay.current.context);
     }, [delayOptions,]);
 
     return (
@@ -408,7 +412,7 @@ function App() {
                                     </div>
                                     <div className="control-row">
                                         <div>Octave</div>
-                                        <div className="display" id="octaveVal">{octaveRef.current}</div>
+                                        <div className="display" id="octaveVal">{octave}</div>
                                     </div>
                                 </div>
                             </div>
@@ -488,14 +492,14 @@ function App() {
                                         <input id="delay-time-range" type="range" min="10" max="100" step={10} defaultValue={delayOptions.delayTime * 10}/>
                                     </div>
                                     <div className="control-row">
-                                        <div>Attack</div>
+                                        <div>Time</div>
                                         <div className="display">{delayOptions.delayTime}</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="delay-feed-range" type="range" min="10" max="100" step={10} defaultValue={delayOptions.feedback * 10}/>
+                                        <input id="delay-feedback-range" type="range" min="10" max="100" step={10} defaultValue={delayOptions.feedback * 10}/>
                                     </div>
                                     <div className="control-row">
-                                        <div>Decay</div>
+                                        <div>Feedback</div>
                                         <div className="display">{delayOptions.feedback}</div>
                                     </div>
                                 </div>
@@ -504,7 +508,7 @@ function App() {
                                         <input id="delay-wet-range" type="range" min="10" max="100" step={10} defaultValue={delayOptions.wet * 10}/>
                                     </div>
                                     <div className="control-row">
-                                        <div>Sustain</div>
+                                        <div>Wet</div>
                                         <div className="display">{delayOptions.wet}</div>
                                     </div>
                                 </div>

@@ -226,6 +226,14 @@ body {
   height: auto;
 }
 
+.control-label {
+  font-family: "Audiowide", cursive;
+  font-size: 1.15em;
+  font-weight: 400;
+  color: #141414;
+  height: auto;
+}
+
 #keyboard {
   border: 0.15em solid #141414;
 }
