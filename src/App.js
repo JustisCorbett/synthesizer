@@ -42,10 +42,10 @@ function App() {
     const [delayOptions, updateDelayOptions] = React.useReducer(
         (state, action) => {
             switch (action.type) {
-                case "time":
+                case "delayTime":
                     return {
                         ...state,
-                        time: action.payload
+                        delayTime: action.payload
                     }
                 case "feedback":
                     return {
@@ -327,7 +327,7 @@ function App() {
         const handleDelayTimeChange = (e) => {
             updateDelayOptions(
                 {
-                type: "time",
+                type: "delayTime",
                 payload: parseInt(e.target.value) / 100
             });
         }
@@ -485,27 +485,27 @@ function App() {
                             <div className="control-main-row">
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="delay-time-range" type="range" min="10" max="500" step={10} defaultValue={delayOptions.time * 10}/>
+                                        <input id="delay-time-range" type="range" min="10" max="100" step={10} defaultValue={delayOptions.delayTime * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Attack</div>
-                                        <div className="display">{polySynthOptions.envelope.attack}</div>
+                                        <div className="display">{delayOptions.delayTime}</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="delay-feed-range" type="range" min="10" max="500" step={10} defaultValue={delayOptions.feedback * 10}/>
+                                        <input id="delay-feed-range" type="range" min="10" max="100" step={10} defaultValue={delayOptions.feedback * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Decay</div>
-                                        <div className="display">{polySynthOptions.envelope.decay}</div>
+                                        <div className="display">{delayOptions.feedback}</div>
                                     </div>
                                 </div>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="delay-wet-range" type="range" min="10" max="100" step={10} defaultValue={delayOptions.wet * 100}/>
+                                        <input id="delay-wet-range" type="range" min="10" max="100" step={10} defaultValue={delayOptions.wet * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Sustain</div>
-                                        <div className="display">{polySynthOptions.envelope.sustain}</div>
+                                        <div className="display">{delayOptions.wet}</div>
                                     </div>
                                 </div>
                             </div>
