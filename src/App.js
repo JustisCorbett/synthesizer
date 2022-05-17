@@ -226,8 +226,12 @@ function App() {
         }
 
         const handleVolumeChange = (e) => {
-            volume.current.set({
-                volume : e.target.value
+            updatePolySynthOptions(
+                {
+                type: "synth",
+                payload: {
+                    volume: e.target.value
+                }
             });
         }
     
@@ -403,11 +407,11 @@ function App() {
                             <div className="control-main-row">
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="volume-range" type="range" min="-50" max="0" defaultValue={volume.current.volume.value}/>
+                                        <input id="volume-range" type="range" min="-50" max="0" defaultValue={polySynthOptions.volume}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Volume</div>
-                                        <div className="display">{volume.current.volume.value}db</div>
+                                        <div className="display">{polySynthOptions.volume}db</div>
                                     </div>
                                     <div className="control-row">
                                         <input id="octave-range" type="range" min="0" max="2" defaultValue={0}/>
@@ -470,14 +474,14 @@ function App() {
                                 </div>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="sustain-range" type="range" min="10" max="100" step={10} defaultValue={polySynthOptions.envelope.sustain * 100}/>
+                                        <input id="sustain-range" type="range" min="0" max="100" step={10} defaultValue={polySynthOptions.envelope.sustain * 100}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Sustain</div>
-                                        <div className="display">{polySynthOptions.envelope.sustain}s</div>
+                                        <div className="display">{polySynthOptions.envelope.sustain * 100}%</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="release-range" type="range" min="0" max="500" step={10} defaultValue={polySynthOptions.envelope.release * 10}/>
+                                        <input id="release-range" type="range" min="10" max="500" step={10} defaultValue={polySynthOptions.envelope.release * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Release</div>
@@ -502,7 +506,7 @@ function App() {
                                     </div>
                                     <div className="control-row">
                                         <div>Feedback</div>
-                                        <div className="display">{delayOptions.feedback}s</div>
+                                        <div className="display">{delayOptions.feedback * 100}%</div>
                                     </div>
                                 </div>
                                 <div className="control-col">
