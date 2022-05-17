@@ -67,13 +67,34 @@ function App() {
             wet: 0
         });
 
+    const [reverbOptions, updateReverbOptions] = React.useReducer(
+        (state, action) => {
+            switch (action.type) {
+                case "wet":
+                    return {
+                        ...state,
+                        wet: action.payload
+                    }
+                case "decay":
+                    return {
+                        ...state,
+                        decay: action.payload
+                    }
+                default:
+                    return state
+            }
+        },
+        {
+            wet: 0,
+            decay: 2.5
+        });
+
 
     const [octave, setOctave] = React.useState(0);
     const octaveRef = React.useRef(0);
     const delay = React.useRef(new Tone.FeedbackDelay("8n", 0.5).toDestination());
     //const chorus = React.useRef(new Tone.Chorus(4, 2.5, 0.5).start().toDestination());
-    //const reverb = React.useRef(new Tone.Freeverb(0.5, 0.5).toDestination());
-    const volume = React.useRef(new Tone.Volume(0).toDestination());
+    const reverb = React.useRef(new Tone.Reverb().toDestination());
     //const filter = React.useRef(new Tone.Filter(440, "lowpass").toDestination());
     const polySynth = React.useRef(new Tone.PolySynth().toDestination());
     // const [filter, setFilter] = useState(new Tone.Filter());
@@ -361,6 +382,37 @@ function App() {
 
     }, [])
 
+    // set up event listeners for reverb option changes, and update reverb options
+    React.useEffect(() => {
+        let reverbDecayRange = document.getElementById("reverb-decay-range");
+        let reverbWetRange = document.getElementById("reverb-wet-range");
+
+        const handleReverbDecayChange = (e) => {
+            updateReverbOptions(
+                {
+                type: "decay",
+                payload: parseInt(e.target.value) / 100
+            });
+        }
+
+        const handleReverbWetChange = (e) => {
+            updateReverbOptions(
+                {
+                type: "wet",
+                payload: parseInt(e.target.value) / 100
+            });
+        }
+
+        reverbDecayRange.addEventListener("change", handleReverbDecayChange);
+        reverbWetRange.addEventListener("change", handleReverbWetChange);
+
+        return () => {
+            reverbDecayRange.removeEventListener("change", handleReverbDecayChange);
+            reverbWetRange.removeEventListener("change", handleReverbWetChange);
+        }
+
+    }, [])
+
     // set octave state
     React.useEffect(() => {
         polySynth.current.releaseAll();
@@ -371,18 +423,18 @@ function App() {
     useEffect(() => {
         polySynth.current.releaseAll(Tone.now());
         polySynth.current.dispose();
-        polySynth.current = new Tone.PolySynth().connect(delay.current);
+        polySynth.current = new Tone.PolySynth().connect(delay.current).connect(reverb.current);
         polySynth.current.set({
             volume: polySynthOptions.volume,
             detune: polySynthOptions.detune,
             oscillator: polySynthOptions.oscillator,
             envelope: polySynthOptions.envelope,
         });
-        console.log(polySynth.current.context);
     }, [polySynthOptions, ]);
 
     // create new delay with updated delay options
     useEffect(() => {
+        polySynth.current.releaseAll(Tone.now());
         delay.current.dispose();
         delay.current = new Tone.FeedbackDelay().toDestination();
         delay.current.set({
@@ -392,6 +444,18 @@ function App() {
         });
         polySynth.current.connect(delay.current);
     }, [delayOptions,]);
+
+    // create new reverb with updated reverb options
+    useEffect(() => {
+        polySynth.current.releaseAll(Tone.now());
+        reverb.current.dispose();
+        reverb.current = new Tone.Reverb().toDestination();
+        reverb.current.set({
+            decay: reverbOptions.decay,
+            wet: reverbOptions.wet
+        });
+        polySynth.current.connect(reverb.current);
+    }, [reverbOptions,]);
 
     return (
         <div className="App">
@@ -516,6 +580,27 @@ function App() {
                                     <div className="control-row">
                                         <div>Wet</div>
                                         <div className="display">{delayOptions.wet * 100}%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="control-container">
+                            <div className="control-label">Reverb</div>
+                            <div className="control-main-row">
+                                <div className="control-col">
+                                    <div className="control-row">
+                                        <input id="reverb-decay-range" type="range" min="10" max="1000" step={10} defaultValue={reverbOptions.decay * 100}/>
+                                    </div>
+                                    <div className="control-row">
+                                        <div>Size</div>
+                                        <div className="display">{reverbOptions.decay}s</div>
+                                    </div>
+                                    <div className="control-row">
+                                        <input id="reverb-wet-range" type="range" min="0" max="100" step={10} defaultValue={reverbOptions.wet * 100}/>
+                                    </div>
+                                    <div className="control-row">
+                                        <div>Wet</div>
+                                        <div className="display">{reverbOptions.wet * 100}%</div>
                                     </div>
                                 </div>
                             </div>
