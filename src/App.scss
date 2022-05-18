@@ -155,6 +155,9 @@ body{
     font-weight: 400;
     color: $synth_Color_Tertiary;
     height: auto;
+    width: 100%;
+    text-align: center;
+    background-color: $synth_Color_Secondary;
 }
 
 #keyboard{

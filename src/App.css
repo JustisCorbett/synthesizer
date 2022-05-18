@@ -232,6 +232,9 @@ body {
   font-weight: 400;
   color: #141414;
   height: auto;
+  width: 100%;
+  text-align: center;
+  background-color: #8C8C8C;
 }
 
 #keyboard {

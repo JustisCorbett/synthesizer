@@ -89,14 +89,51 @@ function App() {
             decay: 2.5
         });
 
+    const [chorusOptions, updateChorusOptions] = React.useReducer(
+        (state, action) => {
+            switch (action.type) {
+                case "wet":
+                    return {
+                        ...state,
+                        wet: action.payload
+                    }
+                case "depth":
+                    return {
+                        ...state,
+                        depth: action.payload
+                    }
+                case "frequency":
+                    return {
+                        ...state,
+                        frequency: action.payload
+                    }
+                case "delayTime":
+                    return {
+                        ...state,
+                        delayTime: action.payload
+                    }
+                default:
+                    return state
+            }
+        },
+        {
+            wet: 0,
+            depth: 0.5,
+            frequency: 4,
+            delayTime: 2.5
+        });
+
 
     const [octave, setOctave] = React.useState(0);
     const octaveRef = React.useRef(0);
     const delay = React.useRef(new Tone.FeedbackDelay("8n", 0.5).toDestination());
-    //const chorus = React.useRef(new Tone.Chorus(4, 2.5, 0.5).start().toDestination());
+    const chorus = React.useRef(new Tone.Chorus(4, 10, 0.1).toDestination().start());
     const reverb = React.useRef(new Tone.Reverb().toDestination());
     //const filter = React.useRef(new Tone.Filter(440, "lowpass").toDestination());
-    const polySynth = React.useRef(new Tone.PolySynth().toDestination());
+    const polySynth = React.useRef(new Tone.PolySynth()
+        .connect(delay.current)
+        .connect(chorus.current)
+        .connect(reverb.current));
     // const [filter, setFilter] = useState(new Tone.Filter());
     // const [reverb, setReverb] = useState(new Tone.Reverb());
     // const [delay, setDelay] = useState(new Tone.FeedbackDelay());
@@ -413,6 +450,60 @@ function App() {
 
     }, [])
 
+    // set up event listeners for chorus option changes, and update chorus options
+    React.useEffect(() => {
+        let chorusDelayRange = document.getElementById("chorus-delay-range");
+        let chorusWetRange = document.getElementById("chorus-wet-range");
+        let chorusFrequencyRange = document.getElementById("chorus-frequency-range");
+        let chorusDepthRange = document.getElementById("chorus-depth-range");
+
+        const handleChorusDelayChange = (e) => {
+            updateChorusOptions(
+                {
+                type: "delayTime",
+                payload: parseInt(e.target.value) / 10
+            });
+        }
+
+        const handleChorusWetChange = (e) => {
+            updateChorusOptions(
+                {
+                type: "wet",
+                payload: parseInt(e.target.value) / 100
+            });
+        }
+
+        const handleChorusFrequencyChange = (e) => {
+            updateChorusOptions(
+                {
+                type: "frequency",
+                payload: parseInt(e.target.value) / 10
+            });
+        }
+
+        const handleChorusDepthChange = (e) => {
+            updateChorusOptions(
+                {
+                type: "depth",
+                payload: parseInt(e.target.value) / 100
+            });
+        }
+
+        chorusDelayRange.addEventListener("change", handleChorusDelayChange);
+        chorusWetRange.addEventListener("change", handleChorusWetChange);
+        chorusFrequencyRange.addEventListener("change", handleChorusFrequencyChange);
+        chorusDepthRange.addEventListener("change", handleChorusDepthChange);
+
+        return () => {
+            chorusDelayRange.removeEventListener("change", handleChorusDelayChange);
+            chorusWetRange.removeEventListener("change", handleChorusWetChange);
+            chorusFrequencyRange.removeEventListener("change", handleChorusFrequencyChange);
+            chorusDepthRange.removeEventListener("change", handleChorusDepthChange);
+        }
+
+    }, [])
+
+
     // set octave state
     React.useEffect(() => {
         polySynth.current.releaseAll();
@@ -422,8 +513,11 @@ function App() {
     // create new synth with updated synth options
     useEffect(() => {
         polySynth.current.releaseAll(Tone.now());
-        polySynth.current.dispose();
-        polySynth.current = new Tone.PolySynth().connect(delay.current).connect(reverb.current);
+        //polySynth.current.dispose();
+        //polySynth.current = new Tone.PolySynth()
+        //    .connect(delay.current)
+        //    .connect(reverb.current)
+        //    .connect(chorus.current);
         polySynth.current.set({
             volume: polySynthOptions.volume,
             detune: polySynthOptions.detune,
@@ -435,27 +529,43 @@ function App() {
     // create new delay with updated delay options
     useEffect(() => {
         polySynth.current.releaseAll(Tone.now());
-        delay.current.dispose();
-        delay.current = new Tone.FeedbackDelay().toDestination();
+        //delay.current.dispose();
+        //delay.current = new Tone.FeedbackDelay().toDestination();
         delay.current.set({
             delayTime: delayOptions.delayTime,
             feedback: delayOptions.feedback,
             wet: delayOptions.wet
         });
-        polySynth.current.connect(delay.current);
+        //polySynth.current.connect(delay.current);
     }, [delayOptions,]);
 
     // create new reverb with updated reverb options
     useEffect(() => {
         polySynth.current.releaseAll(Tone.now());
-        reverb.current.dispose();
-        reverb.current = new Tone.Reverb().toDestination();
+        //reverb.current.dispose();
+        //reverb.current = new Tone.Reverb().toDestination();
         reverb.current.set({
             decay: reverbOptions.decay,
             wet: reverbOptions.wet
         });
-        polySynth.current.connect(reverb.current);
+        //polySynth.current.connect(reverb.current);
     }, [reverbOptions,]);
+
+    // create new chorus with updated chorus options
+    useEffect(() => {
+        polySynth.current.releaseAll(Tone.now());
+        //chorus.current.disconnect();
+        //chorus.current.dispose();
+        //chorus.current = new Tone.Chorus().toDestination().start();
+        chorus.current.set({
+            frequency: chorusOptions.frequency,
+            delayTime: chorusOptions.delayTime,
+            depth: chorusOptions.depth,
+            wet: chorusOptions.wet
+        });
+        //polySynth.current.connect(chorus.current);
+    }, [chorusOptions,]);
+
 
     return (
         <div className="App">
@@ -601,6 +711,43 @@ function App() {
                                     <div className="control-row">
                                         <div>Wet</div>
                                         <div className="display">{reverbOptions.wet * 100}%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="control-container">
+                            <div className="control-label">Chorus</div>
+                            <div className="control-main-row">
+                                <div className="control-col">
+                                    <div className="control-row">
+                                        <input id="chorus-depth-range" type="range" min="0" max="100" step={10} defaultValue={chorusOptions.depth * 100}/>
+                                    </div>
+                                    <div className="control-row">
+                                        <div>Depth</div>
+                                        <div className="display">{chorusOptions.depth * 100}%</div>
+                                    </div>
+                                    <div className="control-row">
+                                        <input id="chorus-delay-range" type="range" min="1" max="50" step={1} defaultValue={chorusOptions.delayTime * 10}/>
+                                    </div>
+                                    <div className="control-row">
+                                        <div>Delay</div>
+                                        <div className="display">{chorusOptions.delayTime}ms</div>
+                                    </div>
+                                </div>
+                                <div className="control-col">
+                                    <div className="control-row">
+                                        <input id="chorus-frequency-range" type="range" min="1" max="100" step={1} defaultValue={chorusOptions.frequency * 10}/>
+                                    </div>
+                                    <div className="control-row">
+                                        <div>Frequency</div>
+                                        <div className="display">{chorusOptions.frequency}hz</div>
+                                    </div>
+                                    <div className="control-row">
+                                        <input id="chorus-wet-range" type="range" min="0" max="100" step={10} defaultValue={chorusOptions.wet * 100}/>
+                                    </div>
+                                    <div className="control-row">
+                                        <div>Wet</div>
+                                        <div className="display">{chorusOptions.wet * 100}%</div>
                                     </div>
                                 </div>
                             </div>
