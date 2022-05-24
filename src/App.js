@@ -1,6 +1,7 @@
 import * as Tone from 'tone'
 import './App.css';
 import React, { useEffect } from "react";
+import { Context } from 'tone';
 
 function App() {
     
@@ -126,14 +127,11 @@ function App() {
 
     const [octave, setOctave] = React.useState(0);
     const octaveRef = React.useRef(0);
-    const delay = React.useRef(new Tone.FeedbackDelay("8n", 0.5).toDestination());
-    const chorus = React.useRef(new Tone.Chorus(4, 10, 0.1).toDestination().start());
-    const reverb = React.useRef(new Tone.Reverb().toDestination());
+    const delay = React.useRef(new Tone.FeedbackDelay("8n", 0.5));
+    const chorus = React.useRef(new Tone.Chorus(4, 10, 0.1));
+    const reverb = React.useRef(new Tone.Reverb());
     //const filter = React.useRef(new Tone.Filter(440, "lowpass").toDestination());
-    const polySynth = React.useRef(new Tone.PolySynth()
-        .connect(delay.current)
-        .connect(chorus.current)
-        .connect(reverb.current));
+    const polySynth = React.useRef(new Tone.PolySynth());
     // const [filter, setFilter] = useState(new Tone.Filter());
     // const [reverb, setReverb] = useState(new Tone.Reverb());
     // const [delay, setDelay] = useState(new Tone.FeedbackDelay());
@@ -176,7 +174,6 @@ function App() {
         const playNote = (key) => {
             // need to use a ref to keep track of octave because the state is not updating
             let note = key.dataset.note + (octaveRef.current + parseInt(key.dataset.octave)).toString();
-            console.log(octaveRef.current);
             polySynth.current.triggerRelease(note, Tone.now());
             polySynth.current.triggerAttack(note, Tone.now());
             console.log(polySynth.current.activeVoices);
@@ -510,6 +507,25 @@ function App() {
         octaveRef.current = octave;
     }, [octave, ])
 
+    // clear global context and connect nodes to new audio context
+    React.useEffect(() => {
+        let context = Tone.getContext();
+        console.log(context);
+        context.dispose();
+        Tone.setContext(new Context());
+        polySynth.current.releaseAll();
+        delay.current.toDestination();
+        reverb.current.toDestination();
+        chorus.current.toDestination();
+        polySynth.current
+        .connect(delay.current)
+            .connect(delay.current)
+            .connect(reverb.current)
+            .connect(chorus.current);
+
+    }, [polySynthOptions, delayOptions, reverbOptions, chorusOptions])
+
+
     // create new synth with updated synth options
     useEffect(() => {
         polySynth.current.releaseAll(Tone.now());
@@ -554,7 +570,7 @@ function App() {
     // create new chorus with updated chorus options
     useEffect(() => {
         polySynth.current.releaseAll(Tone.now());
-        //chorus.current.disconnect();
+        chorus.current.stop();
         //chorus.current.dispose();
         //chorus.current = new Tone.Chorus().toDestination().start();
         chorus.current.set({
@@ -563,6 +579,7 @@ function App() {
             depth: chorusOptions.depth,
             wet: chorusOptions.wet
         });
+        chorus.current.start();
         //polySynth.current.connect(chorus.current);
     }, [chorusOptions,]);
 
