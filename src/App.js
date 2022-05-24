@@ -508,32 +508,34 @@ function App() {
     }, [octave, ])
 
     // clear global context and connect nodes to new audio context
-    React.useEffect(() => {
-        let context = Tone.getContext();
-        console.log(context);
-        context.dispose();
-        Tone.setContext(new Context());
-        polySynth.current.releaseAll();
-        delay.current.toDestination();
-        reverb.current.toDestination();
-        chorus.current.toDestination();
-        polySynth.current
-        .connect(delay.current)
-            .connect(delay.current)
-            .connect(reverb.current)
-            .connect(chorus.current);
+    // React.useEffect(() => {
+    //     let context = Tone.getContext();
+    //     console.log(context);
+    //     setTimeout(function() { 
+    //         context.dispose();
+    //      }, 100);  
+    //     //context.dispose();
+    //     Tone.setContext(new Context());
+    //     // polySynth.current.releaseAll();
+    //     // delay.current.toDestination();
+    //     // reverb.current.toDestination();
+    //     // chorus.current.toDestination();
+    //     // polySynth.current
+    //     //     .connect(delay.current)
+    //     //     .connect(reverb.current)
+    //     //     .connect(chorus.current);
 
-    }, [polySynthOptions, delayOptions, reverbOptions, chorusOptions])
+    // }, [polySynthOptions, delayOptions, reverbOptions, chorusOptions])
 
 
     // create new synth with updated synth options
     useEffect(() => {
         polySynth.current.releaseAll(Tone.now());
-        //polySynth.current.dispose();
-        //polySynth.current = new Tone.PolySynth()
-        //    .connect(delay.current)
-        //    .connect(reverb.current)
-        //    .connect(chorus.current);
+        polySynth.current.dispose();
+        polySynth.current = new Tone.PolySynth()
+           .connect(delay.current)
+           .connect(reverb.current)
+           .connect(chorus.current);
         polySynth.current.set({
             volume: polySynthOptions.volume,
             detune: polySynthOptions.detune,
@@ -545,42 +547,41 @@ function App() {
     // create new delay with updated delay options
     useEffect(() => {
         polySynth.current.releaseAll(Tone.now());
-        //delay.current.dispose();
-        //delay.current = new Tone.FeedbackDelay().toDestination();
+        delay.current.dispose();
+        delay.current = new Tone.FeedbackDelay().toDestination();
         delay.current.set({
             delayTime: delayOptions.delayTime,
             feedback: delayOptions.feedback,
             wet: delayOptions.wet
         });
-        //polySynth.current.connect(delay.current);
+        polySynth.current.connect(delay.current);
     }, [delayOptions,]);
 
     // create new reverb with updated reverb options
     useEffect(() => {
         polySynth.current.releaseAll(Tone.now());
-        //reverb.current.dispose();
-        //reverb.current = new Tone.Reverb().toDestination();
+        reverb.current.dispose();
+        reverb.current = new Tone.Reverb().toDestination();
         reverb.current.set({
             decay: reverbOptions.decay,
             wet: reverbOptions.wet
         });
-        //polySynth.current.connect(reverb.current);
+        polySynth.current.connect(reverb.current);
     }, [reverbOptions,]);
 
     // create new chorus with updated chorus options
     useEffect(() => {
         polySynth.current.releaseAll(Tone.now());
         chorus.current.stop();
-        //chorus.current.dispose();
-        //chorus.current = new Tone.Chorus().toDestination().start();
+        chorus.current.dispose();
+        chorus.current = new Tone.Chorus().toDestination().start();
         chorus.current.set({
             frequency: chorusOptions.frequency,
             delayTime: chorusOptions.delayTime,
             depth: chorusOptions.depth,
             wet: chorusOptions.wet
         });
-        chorus.current.start();
-        //polySynth.current.connect(chorus.current);
+        polySynth.current.connect(chorus.current);
     }, [chorusOptions,]);
 
 
