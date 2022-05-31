@@ -26,14 +26,12 @@ $synth_Color_Secondary: #8C8C8C;
 $synth_Color_Tertiary:  #141414;
 
 html{
-	height: 100%;
     width: 100%;
 }
 
 body{
     font-family: $main_Font;
     color: $synth_Color_Tertiary;
-	height:           100%;
     width: 100%;
 	display:          flex;
 	margin:           auto;
@@ -42,7 +40,6 @@ body{
 	background-color: #111;
 }
 #root {
-    height:           100%;
     width: 100%;
     display:          flex;
     flex-direction:   column;

@@ -1,13 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Audiowide&family=Monoton&family=Press+Start+2P&display=swap");
 html {
-  height: 100%;
   width: 100%;
 }
 
 body {
   font-family: "Audiowide", cursive;
   color: #141414;
-  height: 100%;
   width: 100%;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -23,7 +21,6 @@ body {
 }
 
 #root {
-  height: 100%;
   width: 100%;
   display: -webkit-box;
   display: -ms-flexbox;

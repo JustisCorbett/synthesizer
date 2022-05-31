@@ -1,7 +1,7 @@
 import * as Tone from 'tone'
 import './App.css';
 import React, { useEffect } from "react";
-import { Context } from 'tone';
+//import { Context } from 'tone';
 
 function App() {
     
@@ -125,13 +125,17 @@ function App() {
         });
 
 
-    const [octave, setOctave] = React.useState(0);
-    const octaveRef = React.useRef(0);
-    const delay = React.useRef(new Tone.FeedbackDelay("8n", 0.5));
-    const chorus = React.useRef(new Tone.Chorus(4, 10, 0.1));
-    const reverb = React.useRef(new Tone.Reverb());
+    const [octave, setOctave] = React.useState(3);
+    const octaveRef = React.useRef(3);
+    const delay = React.useRef(new Tone.FeedbackDelay("8n", 0.5).toDestination());
+    const chorus = React.useRef(new Tone.Chorus(4, 10, 0.1).toDestination().start());
+    const reverb = React.useRef(new Tone.Reverb().toDestination());
     //const filter = React.useRef(new Tone.Filter(440, "lowpass").toDestination());
-    const polySynth = React.useRef(new Tone.PolySynth());
+    const polySynth = React.useRef(new Tone.PolySynth()
+        .connect(delay.current)
+        .connect(reverb.current)
+        .connect(chorus.current)
+    );
     // const [filter, setFilter] = useState(new Tone.Filter());
     // const [reverb, setReverb] = useState(new Tone.Reverb());
     // const [delay, setDelay] = useState(new Tone.FeedbackDelay());
@@ -531,11 +535,14 @@ function App() {
     // create new synth with updated synth options
     useEffect(() => {
         polySynth.current.releaseAll(Tone.now());
-        polySynth.current.dispose();
-        polySynth.current = new Tone.PolySynth()
-           .connect(delay.current)
-           .connect(reverb.current)
-           .connect(chorus.current);
+        console.log(polySynth);
+        console.log(Tone.getContext());
+        console.log(Tone.getDestination())
+        //polySynth.current.dispose();
+        //polySynth.current = new Tone.PolySynth()
+        //   .connect(delay.current)
+        //   .connect(reverb.current)
+        //   .connect(chorus.current);
         polySynth.current.set({
             volume: polySynthOptions.volume,
             detune: polySynthOptions.detune,
@@ -547,41 +554,41 @@ function App() {
     // create new delay with updated delay options
     useEffect(() => {
         polySynth.current.releaseAll(Tone.now());
-        delay.current.dispose();
-        delay.current = new Tone.FeedbackDelay().toDestination();
+        //delay.current.dispose();
+        //delay.current = new Tone.FeedbackDelay().toDestination();
         delay.current.set({
             delayTime: delayOptions.delayTime,
             feedback: delayOptions.feedback,
             wet: delayOptions.wet
         });
-        polySynth.current.connect(delay.current);
+        //polySynth.current.connect(delay.current);
     }, [delayOptions,]);
 
     // create new reverb with updated reverb options
     useEffect(() => {
         polySynth.current.releaseAll(Tone.now());
-        reverb.current.dispose();
-        reverb.current = new Tone.Reverb().toDestination();
+        //reverb.current.dispose();
+        //reverb.current = new Tone.Reverb().toDestination();
         reverb.current.set({
             decay: reverbOptions.decay,
             wet: reverbOptions.wet
         });
-        polySynth.current.connect(reverb.current);
+        //polySynth.current.connect(reverb.current);
     }, [reverbOptions,]);
 
     // create new chorus with updated chorus options
     useEffect(() => {
         polySynth.current.releaseAll(Tone.now());
-        chorus.current.stop();
-        chorus.current.dispose();
-        chorus.current = new Tone.Chorus().toDestination().start();
+        //chorus.current.stop();
+        //chorus.current.dispose();
+        //chorus.current = new Tone.Chorus().toDestination().start();
         chorus.current.set({
             frequency: chorusOptions.frequency,
             delayTime: chorusOptions.delayTime,
             depth: chorusOptions.depth,
             wet: chorusOptions.wet
         });
-        polySynth.current.connect(chorus.current);
+        //polySynth.current.connect(chorus.current);
     }, [chorusOptions,]);
 
 
@@ -606,7 +613,7 @@ function App() {
                                         <div className="display">{polySynthOptions.volume}db</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="octave-range" type="range" min="0" max="2" defaultValue={0}/>
+                                        <input id="octave-range" type="range" min="0" max="2" defaultValue={1}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Octave</div>
