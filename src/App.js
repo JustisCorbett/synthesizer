@@ -137,6 +137,7 @@ function App() {
 
     const [octave, setOctave] = React.useState(3);
     const octaveRef = React.useRef(3);
+    const [activeVoices, setActiveVoices] = React.useState(polySynth.activeVoices);
     
     // const [filter, setFilter] = useState(new Tone.Filter());
     // const [reverb, setReverb] = useState(new Tone.Reverb());
@@ -187,6 +188,8 @@ function App() {
             } else {
                 key.classList.add("black-highlighted");
             }
+            setActiveVoices(polySynth.activeVoices);
+            console.log(polySynth.activeVoices);
         }
     
         const releaseNote = (key) => {
@@ -199,6 +202,7 @@ function App() {
             } else {
                 key.classList.remove("black-highlighted");
             }
+            setActiveVoices(polySynth.activeVoices);
         }
 
         const handleKeyDown = (e) => {
@@ -649,6 +653,10 @@ function App() {
                                     <div className="control-row">
                                         <div>Spread</div>
                                         <div className="display">{polySynthOptions.oscillator.spread}</div>
+                                    </div>
+                                    <div className="control-row">
+                                        <div>Active Voices</div>
+                                        <div className="display">{activeVoices}/32</div>
                                     </div>
                                 </div>
                             </div>
