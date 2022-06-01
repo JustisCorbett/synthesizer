@@ -3,6 +3,16 @@ import './App.css';
 import React, { useEffect } from "react";
 //import { Context } from 'tone';
 
+const delay = new Tone.FeedbackDelay("8n", 0.5).toDestination();
+const chorus = new Tone.Chorus(4, 10, 0.1).toDestination().start();
+const reverb = new Tone.Reverb().toDestination();
+//const filter = React.useRef(new Tone.Filter(440, "lowpass").toDestination());
+const polySynth = new Tone.PolySynth()
+    .connect(delay)
+    .connect(reverb)
+    .connect(chorus)
+    .toDestination();
+
 function App() {
     
     const [polySynthOptions, updatePolySynthOptions] = React.useReducer(
@@ -127,15 +137,7 @@ function App() {
 
     const [octave, setOctave] = React.useState(3);
     const octaveRef = React.useRef(3);
-    const delay = React.useRef(new Tone.FeedbackDelay("8n", 0.5).toDestination());
-    const chorus = React.useRef(new Tone.Chorus(4, 10, 0.1).toDestination().start());
-    const reverb = React.useRef(new Tone.Reverb().toDestination());
-    //const filter = React.useRef(new Tone.Filter(440, "lowpass").toDestination());
-    const polySynth = React.useRef(new Tone.PolySynth()
-        .connect(delay.current)
-        .connect(reverb.current)
-        .connect(chorus.current)
-    );
+    
     // const [filter, setFilter] = useState(new Tone.Filter());
     // const [reverb, setReverb] = useState(new Tone.Reverb());
     // const [delay, setDelay] = useState(new Tone.FeedbackDelay());
@@ -178,9 +180,8 @@ function App() {
         const playNote = (key) => {
             // need to use a ref to keep track of octave because the state is not updating
             let note = key.dataset.note + (octaveRef.current + parseInt(key.dataset.octave)).toString();
-            polySynth.current.triggerRelease(note, Tone.now());
-            polySynth.current.triggerAttack(note, Tone.now());
-            console.log(polySynth.current.activeVoices);
+            polySynth.triggerRelease(note, Tone.now());
+            polySynth.triggerAttack(note, Tone.now());
             if (key.classList.contains("white")) {
                 key.classList.add("white-highlighted");
             } else {
@@ -190,9 +191,9 @@ function App() {
     
         const releaseNote = (key) => {
             let note = key.dataset.note + (octaveRef.current + parseInt(key.dataset.octave)).toString();
-            polySynth.current.triggerRelease(note, Tone.now());
+            polySynth.triggerRelease(note, Tone.now());
             // triggerRelease twice to fix bug relating to triggering release on keydown.
-            polySynth.current.triggerRelease(note, Tone.now());
+            polySynth.triggerRelease(note, Tone.now());
             if (key.classList.contains("white")) {
                 key.classList.remove("white-highlighted");
             } else {
@@ -507,7 +508,7 @@ function App() {
 
     // set octave state
     React.useEffect(() => {
-        polySynth.current.releaseAll();
+        polySynth.releaseAll();
         octaveRef.current = octave;
     }, [octave, ])
 
@@ -534,7 +535,7 @@ function App() {
 
     // create new synth with updated synth options
     useEffect(() => {
-        polySynth.current.releaseAll(Tone.now());
+        polySynth.releaseAll(Tone.now());
         console.log(polySynth);
         console.log(Tone.getContext());
         console.log(Tone.getDestination())
@@ -543,7 +544,7 @@ function App() {
         //   .connect(delay.current)
         //   .connect(reverb.current)
         //   .connect(chorus.current);
-        polySynth.current.set({
+        polySynth.set({
             volume: polySynthOptions.volume,
             detune: polySynthOptions.detune,
             oscillator: polySynthOptions.oscillator,
@@ -553,10 +554,10 @@ function App() {
 
     // create new delay with updated delay options
     useEffect(() => {
-        polySynth.current.releaseAll(Tone.now());
+        polySynth.releaseAll(Tone.now());
         //delay.current.dispose();
         //delay.current = new Tone.FeedbackDelay().toDestination();
-        delay.current.set({
+        delay.set({
             delayTime: delayOptions.delayTime,
             feedback: delayOptions.feedback,
             wet: delayOptions.wet
@@ -566,10 +567,10 @@ function App() {
 
     // create new reverb with updated reverb options
     useEffect(() => {
-        polySynth.current.releaseAll(Tone.now());
+        polySynth.releaseAll(Tone.now());
         //reverb.current.dispose();
         //reverb.current = new Tone.Reverb().toDestination();
-        reverb.current.set({
+        reverb.set({
             decay: reverbOptions.decay,
             wet: reverbOptions.wet
         });
@@ -578,11 +579,11 @@ function App() {
 
     // create new chorus with updated chorus options
     useEffect(() => {
-        polySynth.current.releaseAll(Tone.now());
+        polySynth.releaseAll(Tone.now());
         //chorus.current.stop();
         //chorus.current.dispose();
         //chorus.current = new Tone.Chorus().toDestination().start();
-        chorus.current.set({
+        chorus.set({
             frequency: chorusOptions.frequency,
             delayTime: chorusOptions.delayTime,
             depth: chorusOptions.depth,
