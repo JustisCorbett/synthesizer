@@ -190,34 +190,40 @@ body {
   margin: 0.5em;
 }
 
-.main-label {
+.main-label-container {
   -webkit-box-flex: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
-  font-family: "Monoton", cursive;
-  font-size: 3em;
   font-weight: 550;
   color: #141414;
   height: auto;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
+  -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-align: start;
-      -ms-flex-align: start;
-          align-items: flex-start;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
   -webkit-box-pack: left;
       -ms-flex-pack: left;
           justify-content: left;
   margin-bottom: 0.5em;
 }
 
+.main-label {
+  padding: -1em;
+  margin: -0.25em;
+  margin-right: 0.25em;
+  font-family: "Monoton", cursive;
+  font-size: 3em;
+}
+
 .sub-label {
   font-family: "Audiowide", cursive;
-  font-size: 0.35em;
+  font-size: 1em;
   font-weight: 400;
   color: #141414;
   height: auto;
