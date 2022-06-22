@@ -3,15 +3,15 @@ import './App.css';
 import React, { useEffect } from "react";
 //import { Context } from 'tone';
 
-const delay = new Tone.FeedbackDelay("8n", 0.5).toDestination();
-const chorus = new Tone.Chorus(4, 10, 0.1).toDestination().start();
-const reverb = new Tone.Reverb().toDestination();
+const delay = new Tone.FeedbackDelay("8n", 0.5);
+const chorus = new Tone.Chorus(4, 10, 0.1).start();
+const reverb = new Tone.Reverb();
+const filter = new Tone.AutoFilter().start();
+
 //const filter = React.useRef(new Tone.Filter(440, "lowpass").toDestination());
 const polySynth = new Tone.PolySynth()
-    .connect(delay)
-    .connect(reverb)
-    .connect(chorus)
-    .toDestination();
+    .chain(filter, delay, reverb, chorus, Tone.Destination);
+    
 
 function App() {
     
@@ -133,46 +133,51 @@ function App() {
             frequency: 4,
             delayTime: 2.5
         });
-
+    
+    const [filterOptions, updateFilterOptions] = React.useReducer(
+        (state, action) => {
+            switch (action.type) {
+                case "frequency":
+                    return {
+                        ...state,
+                        frequency: action.payload
+                    }
+                case "baseFrequency":
+                    return {
+                        ...state,
+                        baseFrequency: action.payload
+                    }
+                case "octaves":
+                    return {
+                        ...state,
+                        octaves: action.payload
+                    }
+                case "type":
+                    return {
+                        ...state,
+                        type: action.payload
+                    }
+                case "depth":
+                    return {
+                        ...state,
+                        depth: action.payload
+                    }
+                default:
+                    return state
+            }
+        },
+        {
+            frequency: 1,
+            baseFrequency: 1000,
+            octaves: 5,
+            type: "sine",
+            depth: 0
+        }
+    );
 
     const [octave, setOctave] = React.useState(3);
     const octaveRef = React.useRef(3);
     const [activeVoices, setActiveVoices] = React.useState(polySynth.activeVoices);
-    
-    // const [filter, setFilter] = useState(new Tone.Filter());
-    // const [reverb, setReverb] = useState(new Tone.Reverb());
-    // const [delay, setDelay] = useState(new Tone.FeedbackDelay());
-    // const [chorus, setChorus] = useState(new Tone.Chorus());
-
-    // TODO: visualize waveform
-    //let waveForm = new Tone.Waveform().toDestination();
-    
-
-    
-
-    
-
-    
-
-    // const handleDelayTimeChange = (e) => {
-    //     delay.current.delayTime.value = parseInt(e.target.value);
-    // }
-
-    // const handleDelayFeedbackChange = (e) => {
-    //     delay.current.feedback.value = parseInt(e.target.value) / 100;
-    // }
-
-    // const handleDelayWetChange = (e) => {
-    //     delay.current.wet.value = parseInt(e.target.value) / 100;
-    // }
-
-    
-
-    // update the octave reference when the octave changes
-    // React.useEffect(() => {
-    //     polySynth.current.releaseAll(Tone.now());
-    //     octaveRef.current = octave;
-    // }, [octave]);
 
     // set up listeners for playing notes
     React.useEffect(() => {
@@ -509,6 +514,76 @@ function App() {
 
     }, [])
 
+    // set up event listeners for filter option changes, and update filter options
+    React.useEffect(() => {
+        let filterFrequencyRange = document.getElementById("filter-frequency-range");
+        let filterBaseFrequencyRange = document.getElementById("filter-base-frequency-range");
+        let filterOctavesRange = document.getElementById("filter-octaves-range");
+        let filterTypeRange = document.getElementById("filter-type-range");
+        let filterDepthRange = document.getElementById("filter-depth-range");
+ 
+        const handleFilterFrequencyChange = (e) => {
+            updateFilterOptions(
+                {
+                    type: "frequency",
+                    payload: parseInt(e.target.value) / 10
+                }
+            );
+        }
+        
+        const handleFilterBaseFrequencyChange = (e) => {
+            updateFilterOptions(
+                {
+                    type: "baseFrequency",
+                    payload: parseInt(e.target.value)
+                }
+            );
+        }
+
+        const handleFilterOctavesChange = (e) => {
+            updateFilterOptions(
+                {
+                    type: "octaves",
+                    payload: parseInt(e.target.value)
+                }
+            );
+        }
+
+        const handleFilterTypeChange = (e) => {
+            const waves = ["sine", "square", "sawtooth", "triangle"];
+            let wave = waves[e.target.value];
+            updateFilterOptions(
+                {
+                type: "type",
+                payload: wave
+            });
+        }
+
+        const handleFilterDepthChange = (e) => {
+            updateFilterOptions(
+                {
+                    type: "depth",
+                    payload: parseInt(e.target.value) / 10
+                }
+            );
+        }
+
+        filterFrequencyRange.addEventListener("change", handleFilterFrequencyChange);
+        filterBaseFrequencyRange.addEventListener("change", handleFilterBaseFrequencyChange);
+        filterOctavesRange.addEventListener("change", handleFilterOctavesChange);
+        filterTypeRange.addEventListener("change", handleFilterTypeChange);
+        filterDepthRange.addEventListener("change", handleFilterDepthChange);
+
+        return () => {
+            filterFrequencyRange.removeEventListener("change", handleFilterFrequencyChange);
+            filterBaseFrequencyRange.removeEventListener("change", handleFilterBaseFrequencyChange);
+            filterOctavesRange.removeEventListener("change", handleFilterOctavesChange);
+            filterTypeRange.removeEventListener("change", handleFilterTypeChange);
+            filterDepthRange.removeEventListener("change", handleFilterDepthChange);
+        }
+
+    }, [])
+
 
     // set octave state
     React.useEffect(() => {
@@ -516,38 +591,10 @@ function App() {
         octaveRef.current = octave;
     }, [octave, ])
 
-    // clear global context and connect nodes to new audio context
-    // React.useEffect(() => {
-    //     let context = Tone.getContext();
-    //     console.log(context);
-    //     setTimeout(function() { 
-    //         context.dispose();
-    //      }, 100);  
-    //     //context.dispose();
-    //     Tone.setContext(new Context());
-    //     // polySynth.current.releaseAll();
-    //     // delay.current.toDestination();
-    //     // reverb.current.toDestination();
-    //     // chorus.current.toDestination();
-    //     // polySynth.current
-    //     //     .connect(delay.current)
-    //     //     .connect(reverb.current)
-    //     //     .connect(chorus.current);
 
-    // }, [polySynthOptions, delayOptions, reverbOptions, chorusOptions])
-
-
-    // create new synth with updated synth options
+    // update synth with synth options
     useEffect(() => {
         polySynth.releaseAll(Tone.now());
-        console.log(polySynth);
-        console.log(Tone.getContext());
-        console.log(Tone.getDestination())
-        //polySynth.current.dispose();
-        //polySynth.current = new Tone.PolySynth()
-        //   .connect(delay.current)
-        //   .connect(reverb.current)
-        //   .connect(chorus.current);
         polySynth.set({
             volume: polySynthOptions.volume,
             detune: polySynthOptions.detune,
@@ -556,45 +603,48 @@ function App() {
         });
     }, [polySynthOptions, ]);
 
-    // create new delay with updated delay options
+    // update delay with delay options
     useEffect(() => {
         polySynth.releaseAll(Tone.now());
-        //delay.current.dispose();
-        //delay.current = new Tone.FeedbackDelay().toDestination();
         delay.set({
             delayTime: delayOptions.delayTime,
             feedback: delayOptions.feedback,
             wet: delayOptions.wet
         });
-        //polySynth.current.connect(delay.current);
     }, [delayOptions,]);
 
-    // create new reverb with updated reverb options
+    // update reverb with reverb options
     useEffect(() => {
         polySynth.releaseAll(Tone.now());
-        //reverb.current.dispose();
-        //reverb.current = new Tone.Reverb().toDestination();
         reverb.set({
             decay: reverbOptions.decay,
             wet: reverbOptions.wet
         });
-        //polySynth.current.connect(reverb.current);
     }, [reverbOptions,]);
 
-    // create new chorus with updated chorus options
+    // update chorus with chorus options
     useEffect(() => {
         polySynth.releaseAll(Tone.now());
-        //chorus.current.stop();
-        //chorus.current.dispose();
-        //chorus.current = new Tone.Chorus().toDestination().start();
         chorus.set({
             frequency: chorusOptions.frequency,
             delayTime: chorusOptions.delayTime,
             depth: chorusOptions.depth,
             wet: chorusOptions.wet
         });
-        //polySynth.current.connect(chorus.current);
     }, [chorusOptions,]);
+
+    // update filter with filter options
+    useEffect(() => {
+        polySynth.releaseAll(Tone.now());
+        console.log(filter);
+        filter.set({
+            frequency: filterOptions.frequency,
+            baseFrequency: filterOptions.baseFrequency,
+            octaves: filterOptions.octaves,
+            depth: filterOptions.depth,
+            type: filterOptions.type
+        });
+    }, [filterOptions,]);
 
 
     return (
@@ -694,6 +744,52 @@ function App() {
                                     <div className="control-row">
                                         <div>Release</div>
                                         <div className="display">{polySynthOptions.envelope.release}s</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="control-container">
+                            <div className="control-label">Filter(LFO)</div>
+                            <div className="control-main-row">
+                                <div className="control-col">
+                                    <div className="control-row">
+                                        <input id="filter-frequency-range" type="range" min="1" max="100" step={1} defaultValue={filterOptions.frequency * 10}/>
+                                    </div>
+                                    <div className="control-row">
+                                        <div>LFO Frequency</div>
+                                        <div className="display">{filterOptions.frequency}hz</div>
+                                    </div>
+                                    <div className="control-row">
+                                        <input id="filter-base-frequency-range" type="range" min="10" max="20000" step={10} defaultValue={filterOptions.baseFrequency}/>
+                                    </div>
+                                    <div className="control-row">
+                                        <div>Minimum Cutoff</div>
+                                        <div className="display">{filterOptions.baseFrequency}hz</div>
+                                    </div>
+                                </div>
+                                <div className="control-col">
+                                    <div className="control-row">
+                                        <input id="filter-octaves-range" type="range" min="1" max="10" step={1} defaultValue={filterOptions.octaves}/>
+                                    </div>
+                                    <div className="control-row">
+                                        <div>Octaves Above Cutoff</div>
+                                        <div className="display">+{filterOptions.octaves} oct</div>
+                                    </div>
+                                    <div className="control-row">
+                                        <input id="filter-depth-range" type="range" min="0" max="10" step={1} defaultValue={filterOptions.depth * 10}/>
+                                    </div>
+                                    <div className="control-row">
+                                        <div>LFO Effect</div>
+                                        <div className="display">{filterOptions.depth * 100}%</div>
+                                    </div>
+                                </div>
+                                <div className="control-col">
+                                    <div className="control-row">
+                                        <input id="filter-type-range" type="range" min="0" max="3" step={1} defaultValue={0}/>
+                                    </div>
+                                    <div className="control-row">
+                                        <div>LFO Wave</div>
+                                        <div className="display">{filter.type}</div>
                                     </div>
                                 </div>
                             </div>
