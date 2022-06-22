@@ -44,7 +44,7 @@ function App() {
             }
         },
         {
-            volume: -24,
+            volume: -12,
             detune: 0, 
             oscillator: {type: 'fatsine', count: 1, spread: 10}, 
             envelope: {attack: 0.1, decay: 0.1, sustain: 1, release: 0.5}, 
@@ -162,6 +162,11 @@ function App() {
                         ...state,
                         depth: action.payload
                     }
+                case "wet":
+                    return {
+                        ...state,
+                        wet: action.payload
+                    }
                 default:
                     return state
             }
@@ -171,7 +176,8 @@ function App() {
             baseFrequency: 1000,
             octaves: 5,
             type: "sine",
-            depth: 0
+            depth: 0,
+            wet: 0
         }
     );
 
@@ -521,6 +527,7 @@ function App() {
         let filterOctavesRange = document.getElementById("filter-octaves-range");
         let filterTypeRange = document.getElementById("filter-type-range");
         let filterDepthRange = document.getElementById("filter-depth-range");
+        let filterWetRange = document.getElementById("filter-wet-range")
  
         const handleFilterFrequencyChange = (e) => {
             updateFilterOptions(
@@ -567,12 +574,22 @@ function App() {
                 }
             );
         }
+        
+        const handleFilterWetChange = (e) => {
+            updateFilterOptions(
+                {
+                    type: "wet",
+                    payload: parseInt(e.target.value) / 100
+                }
+            );
+        }
 
         filterFrequencyRange.addEventListener("change", handleFilterFrequencyChange);
         filterBaseFrequencyRange.addEventListener("change", handleFilterBaseFrequencyChange);
         filterOctavesRange.addEventListener("change", handleFilterOctavesChange);
         filterTypeRange.addEventListener("change", handleFilterTypeChange);
         filterDepthRange.addEventListener("change", handleFilterDepthChange);
+        filterWetRange.addEventListener("change", handleFilterWetChange);
 
         return () => {
             filterFrequencyRange.removeEventListener("change", handleFilterFrequencyChange);
@@ -580,6 +597,7 @@ function App() {
             filterOctavesRange.removeEventListener("change", handleFilterOctavesChange);
             filterTypeRange.removeEventListener("change", handleFilterTypeChange);
             filterDepthRange.removeEventListener("change", handleFilterDepthChange);
+            filterWetRange.removeEventListener("change", handleFilterWetChange);
         }
 
     }, [])
@@ -642,7 +660,8 @@ function App() {
             baseFrequency: filterOptions.baseFrequency,
             octaves: filterOptions.octaves,
             depth: filterOptions.depth,
-            type: filterOptions.type
+            type: filterOptions.type,
+            wet: filterOptions.wet
         });
     }, [filterOptions,]);
 
@@ -763,7 +782,7 @@ function App() {
                                         <input id="filter-base-frequency-range" type="range" min="10" max="20000" step={10} defaultValue={filterOptions.baseFrequency}/>
                                     </div>
                                     <div className="control-row">
-                                        <div>Minimum Cutoff</div>
+                                        <div>Min Cutoff</div>
                                         <div className="display">{filterOptions.baseFrequency}hz</div>
                                     </div>
                                 </div>
@@ -772,8 +791,8 @@ function App() {
                                         <input id="filter-octaves-range" type="range" min="1" max="10" step={1} defaultValue={filterOptions.octaves}/>
                                     </div>
                                     <div className="control-row">
-                                        <div>Octaves Above Cutoff</div>
-                                        <div className="display">+{filterOptions.octaves} oct</div>
+                                        <div>Max Cutoff</div>
+                                        <div className="display">+{filterOptions.octaves}oct</div>
                                     </div>
                                     <div className="control-row">
                                         <input id="filter-depth-range" type="range" min="0" max="10" step={1} defaultValue={filterOptions.depth * 10}/>
@@ -789,7 +808,14 @@ function App() {
                                     </div>
                                     <div className="control-row">
                                         <div>LFO Wave</div>
-                                        <div className="display">{filter.type}</div>
+                                        <div className="display">{filterOptions.type}</div>
+                                    </div>
+                                    <div className="control-row">
+                                        <input id="filter-wet-range" type="range" min="0" max="100" step={1} defaultValue={filterOptions.wet * 100}/>
+                                    </div>
+                                    <div className="control-row">
+                                        <div>Wet</div>
+                                        <div className="display">{filterOptions.wet * 100}%</div>
                                     </div>
                                 </div>
                             </div>
@@ -815,7 +841,7 @@ function App() {
                                 </div>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="delay-wet-range" type="range" min="0" max="100" step={10} defaultValue={delayOptions.wet * 100}/>
+                                        <input id="delay-wet-range" type="range" min="0" max="100" step={1} defaultValue={delayOptions.wet * 100}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Wet</div>
@@ -836,7 +862,7 @@ function App() {
                                         <div className="display">{reverbOptions.decay}s</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="reverb-wet-range" type="range" min="0" max="100" step={10} defaultValue={reverbOptions.wet * 100}/>
+                                        <input id="reverb-wet-range" type="range" min="0" max="100" step={1} defaultValue={reverbOptions.wet * 100}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Wet</div>
@@ -873,7 +899,7 @@ function App() {
                                         <div className="display">{chorusOptions.frequency}hz</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="chorus-wet-range" type="range" min="0" max="100" step={10} defaultValue={chorusOptions.wet * 100}/>
+                                        <input id="chorus-wet-range" type="range" min="0" max="100" step={1} defaultValue={chorusOptions.wet * 100}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Wet</div>
