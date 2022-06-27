@@ -14,6 +14,59 @@ const polySynth = new Tone.PolySynth()
     
 
 function App() {
+
+    cosnt [isVisible, updateIsVisible] = React.useReducer(
+        (state, action) => {
+            switch (action.type) {
+                case "master":
+                    return {
+                        ...state,
+                        ...action.payload
+                    }
+                case "oscillator":
+                    return {
+                        ...state,
+                        ...action.payload
+                    }
+                case "envelope":
+                    return {
+                        ...state,
+                        ...action.payload
+                    }
+                case "filter":
+                    return {
+                        ...state,
+                        ...action.payload
+                    }
+                case "delay":
+                    return {
+                        ...state,
+                        ...action.payload
+                    }
+                case "reverb":
+                    return {
+                        ...state,
+                        ...action.payload
+                    }
+                case "chorus":
+                    return {
+                        ...state,
+                        ...action.payload
+                    }
+                default:
+                    return state
+            }
+        },
+        {
+            master: true,
+            oscillator: true,
+            envelope: true,
+            filter: true,
+            delay: true,
+            reverb: true,
+            chorus: true 
+        }
+    );
     
     const [polySynthOptions, updatePolySynthOptions] = React.useReducer(
         (state, action) => {
@@ -676,7 +729,7 @@ function App() {
                     </div>
                     <div className="controls">
                         <div className="control-container">
-                            <div className="control-label">Master</div>
+                            <div className="control-label" onClick={controlVis(this.nextElementSibling)}>Master</div>
                             <div className="control-main-row">
                                 <div className="control-col">
                                     <div className="control-row">
@@ -698,7 +751,7 @@ function App() {
                         </div>
                         <div className="control-container">
                             <div className="control-label">OSC</div>
-                            <div className="control-main-row">
+                            <div id="osc-controls" className="control-main-row">
                                 <div className="control-col">
                                     <div className="control-row">
                                         <input id="osc-range" type="range" min="0" max="3" defaultValue={0}/>
@@ -732,7 +785,7 @@ function App() {
                         </div>
                         <div className="control-container">
                             <div className="control-label">ENV</div>
-                            <div className="control-main-row">
+                            <div id="env-controls" className="control-main-row">
                                 <div className="control-col">
                                     <div className="control-row">
                                         <input id="attack-range" type="range" min="0" max="500" step={10} defaultValue={polySynthOptions.envelope.attack * 10}/>
@@ -769,7 +822,7 @@ function App() {
                         </div>
                         <div className="control-container">
                             <div className="control-label">Filter(LFO)</div>
-                            <div className="control-main-row">
+                            <div id="filter-controls" className="control-main-row">
                                 <div className="control-col">
                                     <div className="control-row">
                                         <input id="filter-frequency-range" type="range" min="1" max="100" step={1} defaultValue={filterOptions.frequency * 10}/>
@@ -822,7 +875,7 @@ function App() {
                         </div>
                         <div className="control-container">
                             <div className="control-label">Delay</div>
-                            <div className="control-main-row">
+                            <div id="delay-controls" className="control-main-row">
                                 <div className="control-col">
                                     <div className="control-row">
                                         <input id="delay-time-range" type="range" min="10" max="100" step={10} defaultValue={delayOptions.delayTime * 100}/>
@@ -852,7 +905,7 @@ function App() {
                         </div>
                         <div className="control-container">
                             <div className="control-label">Reverb</div>
-                            <div className="control-main-row">
+                            <div id="reverb-controls" className="control-main-row">
                                 <div className="control-col">
                                     <div className="control-row">
                                         <input id="reverb-decay-range" type="range" min="10" max="1000" step={10} defaultValue={reverbOptions.decay * 100}/>
@@ -873,7 +926,7 @@ function App() {
                         </div>
                         <div className="control-container">
                             <div className="control-label">Chorus</div>
-                            <div className="control-main-row">
+                            <div id="chorus-controls" className="control-main-row">
                                 <div className="control-col">
                                     <div className="control-row">
                                         <input id="chorus-depth-range" type="range" min="0" max="100" step={10} defaultValue={chorusOptions.depth * 100}/>

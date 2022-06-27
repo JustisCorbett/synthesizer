@@ -240,6 +240,10 @@ body {
   background-color: #8C8C8C;
 }
 
+.control-label:hover {
+  background-color: #CBCBCB;
+}
+
 #keyboard {
   border: 0.15em solid #141414;
 }
