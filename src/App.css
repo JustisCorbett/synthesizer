@@ -242,6 +242,7 @@ body {
 
 .control-label:hover {
   background-color: #CBCBCB;
+  cursor: pointer;
 }
 
 #keyboard {
@@ -304,6 +305,13 @@ body {
   padding: 0.5em;
   height: auto;
   width: 50%;
+}
+
+.hidden {
+  overflow: hidden;
+  height: 0.1em;
+  -webkit-transition: all 1s;
+  transition: all 1s;
 }
 
 input[type="range"] {

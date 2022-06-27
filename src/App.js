@@ -15,43 +15,43 @@ const polySynth = new Tone.PolySynth()
 
 function App() {
 
-    cosnt [isVisible, updateIsVisible] = React.useReducer(
+    const [isVisibles, updateIsVisibles] = React.useReducer(
         (state, action) => {
             switch (action.type) {
                 case "master":
                     return {
                         ...state,
-                        ...action.payload
+                        master: action.payload
                     }
                 case "oscillator":
                     return {
                         ...state,
-                        ...action.payload
+                        oscillator: action.payload
                     }
                 case "envelope":
                     return {
                         ...state,
-                        ...action.payload
+                        envelope: action.payload
                     }
                 case "filter":
                     return {
                         ...state,
-                        ...action.payload
+                        filter: action.payload
                     }
                 case "delay":
                     return {
                         ...state,
-                        ...action.payload
+                        delay: action.payload
                     }
                 case "reverb":
                     return {
                         ...state,
-                        ...action.payload
+                        reverb: action.payload
                     }
                 case "chorus":
                     return {
                         ...state,
-                        ...action.payload
+                        chorus: action.payload
                     }
                 default:
                     return state
@@ -61,10 +61,10 @@ function App() {
             master: true,
             oscillator: true,
             envelope: true,
-            filter: true,
-            delay: true,
-            reverb: true,
-            chorus: true 
+            filter: false,
+            delay: false,
+            reverb: false,
+            chorus: false 
         }
     );
     
@@ -237,6 +237,22 @@ function App() {
     const [octave, setOctave] = React.useState(3);
     const octaveRef = React.useRef(3);
     const [activeVoices, setActiveVoices] = React.useState(polySynth.activeVoices);
+
+
+    // toggle visibility of controls
+    const toggleVis = (e) => {
+        console.log(e.target.nextElementSibling.id)
+        let id = e.target.nextElementSibling.id;
+        let newVis = !isVisibles[id];
+        console.log(newVis)
+        updateIsVisibles(
+            {
+                type: id,
+                payload: newVis
+            }
+        )
+    }
+
 
     // set up listeners for playing notes
     React.useEffect(() => {
@@ -729,8 +745,8 @@ function App() {
                     </div>
                     <div className="controls">
                         <div className="control-container">
-                            <div className="control-label" onClick={controlVis(this.nextElementSibling)}>Master</div>
-                            <div className="control-main-row">
+                            <div className="control-label" onClick={toggleVis}>Master</div>
+                            <div id="master" className= {(!isVisibles.master? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
                                         <input id="volume-range" type="range" min="-50" max="0" defaultValue={polySynthOptions.volume}/>
@@ -750,8 +766,8 @@ function App() {
                             </div>
                         </div>
                         <div className="control-container">
-                            <div className="control-label">OSC</div>
-                            <div id="osc-controls" className="control-main-row">
+                            <div className="control-label" onClick={toggleVis}>OSC</div>
+                            <div id="oscillator" className={(!isVisibles.oscillator? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
                                         <input id="osc-range" type="range" min="0" max="3" defaultValue={0}/>
@@ -784,8 +800,8 @@ function App() {
                             </div>
                         </div>
                         <div className="control-container">
-                            <div className="control-label">ENV</div>
-                            <div id="env-controls" className="control-main-row">
+                            <div className="control-label" onClick={toggleVis}>ENV</div>
+                            <div id="envelope" className={(!isVisibles.envelope? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
                                         <input id="attack-range" type="range" min="0" max="500" step={10} defaultValue={polySynthOptions.envelope.attack * 10}/>
@@ -821,8 +837,8 @@ function App() {
                             </div>
                         </div>
                         <div className="control-container">
-                            <div className="control-label">Filter(LFO)</div>
-                            <div id="filter-controls" className="control-main-row">
+                            <div className="control-label" onClick={toggleVis}>Filter(LFO)</div>
+                            <div id="filter" className={(!isVisibles.filter? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
                                         <input id="filter-frequency-range" type="range" min="1" max="100" step={1} defaultValue={filterOptions.frequency * 10}/>
@@ -874,8 +890,8 @@ function App() {
                             </div>
                         </div>
                         <div className="control-container">
-                            <div className="control-label">Delay</div>
-                            <div id="delay-controls" className="control-main-row">
+                            <div className="control-label" onClick={toggleVis}>Delay</div>
+                            <div id="delay" className={(!isVisibles.delay? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
                                         <input id="delay-time-range" type="range" min="10" max="100" step={10} defaultValue={delayOptions.delayTime * 100}/>
@@ -904,8 +920,8 @@ function App() {
                             </div>
                         </div>
                         <div className="control-container">
-                            <div className="control-label">Reverb</div>
-                            <div id="reverb-controls" className="control-main-row">
+                            <div className="control-label" onClick={toggleVis}>Reverb</div>
+                            <div id="reverb" className={(!isVisibles.reverb? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
                                         <input id="reverb-decay-range" type="range" min="10" max="1000" step={10} defaultValue={reverbOptions.decay * 100}/>
@@ -925,8 +941,8 @@ function App() {
                             </div>
                         </div>
                         <div className="control-container">
-                            <div className="control-label">Chorus</div>
-                            <div id="chorus-controls" className="control-main-row">
+                            <div className="control-label" onClick={toggleVis}>Chorus</div>
+                            <div id="chorus" className={(!isVisibles.chorus? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
                                         <input id="chorus-depth-range" type="range" min="0" max="100" step={10} defaultValue={chorusOptions.depth * 100}/>

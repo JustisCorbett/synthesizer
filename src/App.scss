@@ -168,6 +168,7 @@ body{
 
 .control-label:hover{
     background-color: $whiteKey_Color;
+    cursor: pointer;
 }
 
 #keyboard{
@@ -225,6 +226,12 @@ body{
     height: auto;
     width: 50%;
 }
+
+.hidden {
+    overflow: hidden;
+    height: 0.1em;
+    transition: all 1s;
+} 
 
 input[type="range"]{
     -webkit-appearance:none;
