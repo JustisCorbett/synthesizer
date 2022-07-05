@@ -66,7 +66,7 @@ body{
     width: 100%;
 }
 
-.top-container {
+.main-container {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -74,6 +74,22 @@ body{
     width: $keyboard_Width;
     flex-wrap: wrap;
     margin-bottom: 1.25em;
+}
+
+.top-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.presets-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+
 }
 
 .controls {
@@ -225,6 +241,33 @@ body{
     padding: 0.5em;
     height: auto;
     width: 50%;
+}
+
+.preset-display {
+    font-family: $digital_Font;
+    background-color: $blackKey_Highlighted;
+    color: $whiteKey_Color;
+    border: 0.15em solid $synth_Color_Secondary;
+    padding: 0.5em;
+    white-space: nowrap;
+}
+
+.preset-button {
+    font-family: $main_Font;
+    font-size: 1.15em;
+    font-weight: 400;
+    color: $synth_Color_Tertiary;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    background-color: $synth_Color_Secondary;
+    border: 0.15em solid $synth_Color_Tertiary;
+    padding: 0.25em;
+}
+
+.preset-button:hover{
+    background-color: $whiteKey_Color;
+    cursor: pointer;
 }
 
 .hidden {

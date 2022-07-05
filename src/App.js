@@ -738,11 +738,28 @@ function App() {
     return (
         <div className="App">
             <div id="synth-container">
-                <div className="top-container">
-                    <div className="main-label-container">
-                        <div className="main-label">PolyRetro</div>
-                        <div className="sub-label">Created by Justis Corbett</div>
+                <div className="main-container">
+                    <div className="top-container">
+                        <div className="main-label-container">
+                            <div className="main-label">PolyRetro</div>
+                            <div className="sub-label">Created by Justis Corbett</div>
+                        </div>
+                        <div className="presets-container"> 
+                            <div className="preset-display">
+                                No Preset
+                            </div>
+                            <div className='preset-button' id="prev-preset">
+                                {"<"}
+                            </div>
+                            <div className='preset-button' id="next-preset">
+                                {">"}
+                            </div>
+                            <div className='preset-button' id="save">
+                                Save
+                            </div>
+                        </div>
                     </div>
+                    
                     <div className="controls">
                         <div className="control-container">
                             <div className="control-label" onClick={toggleVis}>Master</div>

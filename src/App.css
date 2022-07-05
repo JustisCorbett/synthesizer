@@ -74,7 +74,7 @@ body {
   width: 100%;
 }
 
-.top-container {
+.main-container {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -92,6 +92,38 @@ body {
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
   margin-bottom: 1.25em;
+}
+
+.top-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  width: 100%;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+.presets-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
 }
 
 .controls {
@@ -305,6 +337,33 @@ body {
   padding: 0.5em;
   height: auto;
   width: 50%;
+}
+
+.preset-display {
+  font-family: "Press Start 2P", cursive;
+  background-color: #141414;
+  color: #CBCBCB;
+  border: 0.15em solid #8C8C8C;
+  padding: 0.5em;
+  white-space: nowrap;
+}
+
+.preset-button {
+  font-family: "Audiowide", cursive;
+  font-size: 1.15em;
+  font-weight: 400;
+  color: #141414;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  background-color: #8C8C8C;
+  border: 0.15em solid #141414;
+  padding: 0.25em;
+}
+
+.preset-button:hover {
+  background-color: #CBCBCB;
+  cursor: pointer;
 }
 
 .hidden {
