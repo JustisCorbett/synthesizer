@@ -234,6 +234,53 @@ function App() {
         }
     );
 
+    const [presetOptions, updatePresetOptions] = React.useReducer(
+        (state, action) => {
+            switch (action.type) {
+                case "name":
+                    return {
+                        ...state,
+                        name: action.payload
+                    }
+                case "polySynthOptions":
+                    return {
+                        ...state,
+                        polySynthOptions: action.payload
+                    }
+                case "delayOptions":
+                    return {
+                        ...state,
+                        delayOptions: action.payload
+                    }
+                case "reverbOptions":
+                    return {
+                        ...state,
+                        reverbOptions: action.payload
+                    }
+                case "chorusOptions":
+                    return {
+                        ...state,
+                        chorusOptions: action.payload
+                    }
+                case "filterOptions":
+                    return {
+                        ...state,
+                        filterOptions: action.payload
+                    }
+                default:
+                    return state
+            }
+        },
+        {
+            name: null,
+            polySynthOptions: polySynthOptions,
+            delayOptions: delayOptions,
+            reverbOptions: reverbOptions,
+            chorusOptions: chorusOptions,
+            filterOptions: filterOptions
+        }
+    )
+
     const [octave, setOctave] = React.useState(3);
     const octaveRef = React.useRef(3);
     const [activeVoices, setActiveVoices] = React.useState(polySynth.activeVoices);
@@ -688,6 +735,12 @@ function App() {
             oscillator: polySynthOptions.oscillator,
             envelope: polySynthOptions.envelope,
         });
+        updatePresetOptions(
+            {
+                type: "polySynthOptions",
+                payload: polySynthOptions
+            }
+        )
     }, [polySynthOptions, ]);
 
     // update delay with delay options
@@ -698,6 +751,12 @@ function App() {
             feedback: delayOptions.feedback,
             wet: delayOptions.wet
         });
+        updatePresetOptions(
+            {
+                type: "delayOptions",
+                payload: delayOptions
+            }
+        )
     }, [delayOptions,]);
 
     // update reverb with reverb options
@@ -707,6 +766,12 @@ function App() {
             decay: reverbOptions.decay,
             wet: reverbOptions.wet
         });
+        updatePresetOptions(
+            {
+                type: "reverbOptions",
+                payload: reverbOptions
+            }
+        )
     }, [reverbOptions,]);
 
     // update chorus with chorus options
@@ -718,6 +783,12 @@ function App() {
             depth: chorusOptions.depth,
             wet: chorusOptions.wet
         });
+        updatePresetOptions(
+            {
+                type: "chorusOptions",
+                payload: chorusOptions
+            }
+        )
     }, [chorusOptions,]);
 
     // update filter with filter options
@@ -732,6 +803,12 @@ function App() {
             type: filterOptions.type,
             wet: filterOptions.wet
         });
+        updatePresetOptions(
+            {
+                type: "filterOptions",
+                payload: filterOptions
+            }
+        )
     }, [filterOptions,]);
 
 
@@ -745,9 +822,9 @@ function App() {
                             <div className="sub-label">Created by Justis Corbett</div>
                         </div>
                         <div className="presets-container"> 
-                            <div className="preset-display">
-                                No Preset
-                            </div>
+                            <select className="preset-display">
+                            <option value="none">No Preset</option>
+                            </select>
                             <div className='preset-button' id="prev-preset">
                                 {"<"}
                             </div>
