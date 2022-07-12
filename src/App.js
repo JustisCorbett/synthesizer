@@ -11,7 +11,27 @@ const filter = new Tone.AutoFilter().start();
 //const filter = React.useRef(new Tone.Filter(440, "lowpass").toDestination());
 const polySynth = new Tone.PolySynth()
     .chain(filter, delay, reverb, chorus, Tone.Destination);
-    
+
+
+const downloadPreset = (data) => {
+    console.log(data);
+    const json = JSON.stringify(data);
+    const fileName = data.name;
+    // Create a blob with the data we want to download as a file
+    const blob = new Blob([json], {type: "text/json"})
+    // Create an anchor element and dispatch a click event on it
+    // to trigger a download
+    const a = document.createElement('a')
+    a.download = fileName
+    a.href = window.URL.createObjectURL(blob)
+    const clickEvt = new MouseEvent('click', {
+        view: window,
+        bubbles: true,
+        cancelable: true,
+    })
+    a.dispatchEvent(clickEvt)
+    a.remove()
+}
 
 function App() {
 
@@ -272,7 +292,7 @@ function App() {
             }
         },
         {
-            name: null,
+            name: "Default",
             polySynthOptions: polySynthOptions,
             delayOptions: delayOptions,
             reverbOptions: reverbOptions,
@@ -811,6 +831,8 @@ function App() {
         )
     }, [filterOptions,]);
 
+    // update all options when preset changes
+    
 
     return (
         <div className="App">
@@ -822,17 +844,15 @@ function App() {
                             <div className="sub-label">Created by Justis Corbett</div>
                         </div>
                         <div className="presets-container"> 
-                            <select className="preset-display">
-                            <option value="none">No Preset</option>
-                            </select>
-                            <div className='preset-button' id="prev-preset">
-                                {"<"}
-                            </div>
-                            <div className='preset-button' id="next-preset">
-                                {">"}
-                            </div>
-                            <div className='preset-button' id="save">
+                            <input  id="preset-name" className="preset-display" value="No Preset">
+                                
+                            </input>
+                            <div onClick={() => downloadPreset(presetOptions)} className='preset-button' id="save">
                                 Save
+                            </div>
+                            <div className='preset-button' id="load">
+                                Load
+                                <input className="fully-hidden" type="file" />
                             </div>
                         </div>
                     </div>

@@ -372,9 +372,13 @@ body {
 
 .hidden {
   overflow: hidden;
-  height: 0.1em;
+  height: 0em;
   -webkit-transition: all 1s;
   transition: all 1s;
+}
+
+.fully-hidden {
+  display: none;
 }
 
 input[type="range"] {
