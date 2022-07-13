@@ -91,6 +91,8 @@ function App() {
     const [polySynthOptions, updatePolySynthOptions] = React.useReducer(
         (state, action) => {
             switch (action.type) {
+                case "REPLACE_STATE":
+                    return action.payload
                 case "synth":
                     return {
                         ...state,
@@ -126,6 +128,8 @@ function App() {
     const [delayOptions, updateDelayOptions] = React.useReducer(
         (state, action) => {
             switch (action.type) {
+                case "REPLACE_STATE":
+                    return action.payload
                 case "delayTime":
                     return {
                         ...state,
@@ -154,6 +158,8 @@ function App() {
     const [reverbOptions, updateReverbOptions] = React.useReducer(
         (state, action) => {
             switch (action.type) {
+                case "REPLACE_STATE":
+                    return action.payload
                 case "wet":
                     return {
                         ...state,
@@ -176,6 +182,8 @@ function App() {
     const [chorusOptions, updateChorusOptions] = React.useReducer(
         (state, action) => {
             switch (action.type) {
+                case "REPLACE_STATE":
+                    return action.payload
                 case "wet":
                     return {
                         ...state,
@@ -210,6 +218,8 @@ function App() {
     const [filterOptions, updateFilterOptions] = React.useReducer(
         (state, action) => {
             switch (action.type) {
+                case "REPLACE_STATE":
+                    return action.payload
                 case "frequency":
                     return {
                         ...state,
@@ -257,6 +267,8 @@ function App() {
     const [presetOptions, updatePresetOptions] = React.useReducer(
         (state, action) => {
             switch (action.type) {
+                case "REPLACE_STATE":
+                    return action.payload
                 case "name":
                     return {
                         ...state,
@@ -832,6 +844,12 @@ function App() {
     }, [filterOptions,]);
 
     // update all options when preset changes
+    const handleOptionsChangesWithPresetChange = React.useCallback(() => {
+        polySynth.releaseAll(Tone.now());
+        updatePolySynthOptions(
+
+        )
+    })
     
     // update preset name when changed
     const handlePresetNameChange = React.useCallback((e) => {
@@ -854,7 +872,6 @@ function App() {
                         </div>
                         <div className="presets-container"> 
                             <input  id="preset-name" className="preset-display" value={presetOptions.name} onChange={handlePresetNameChange}>
-                                
                             </input>
                             <div onClick={() => downloadPreset(presetOptions)} className='preset-button' id="save">
                                 Save
