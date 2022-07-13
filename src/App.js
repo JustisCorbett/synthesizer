@@ -322,7 +322,7 @@ function App() {
 
 
     // set up listeners for playing notes
-    React.useEffect(() => {
+    useEffect(() => {
         let keyboard = document.getElementById("keyboard");
 
         const playNote = (key) => {
@@ -393,7 +393,7 @@ function App() {
     }, []);
 
     // set up event listeners for oscillator options, and update the oscillator options
-    React.useEffect(() => {
+    useEffect(() => {
 
         let octaveRange = document.getElementById("octave-range");
         let volumeRange = document.getElementById("volume-range");
@@ -531,7 +531,7 @@ function App() {
     }, [])
 
     // set up event listeners for delay option changes, and update delay options
-    React.useEffect(() => {
+    useEffect(() => {
         let delayTimeRange = document.getElementById("delay-time-range");
         let delayFeedbackRange = document.getElementById("delay-feedback-range");
         let delayWetRange = document.getElementById("delay-wet-range");
@@ -573,7 +573,7 @@ function App() {
     }, [])
 
     // set up event listeners for reverb option changes, and update reverb options
-    React.useEffect(() => {
+    useEffect(() => {
         let reverbDecayRange = document.getElementById("reverb-decay-range");
         let reverbWetRange = document.getElementById("reverb-wet-range");
 
@@ -604,7 +604,7 @@ function App() {
     }, [])
 
     // set up event listeners for chorus option changes, and update chorus options
-    React.useEffect(() => {
+    useEffect(() => {
         let chorusDelayRange = document.getElementById("chorus-delay-range");
         let chorusWetRange = document.getElementById("chorus-wet-range");
         let chorusFrequencyRange = document.getElementById("chorus-frequency-range");
@@ -657,7 +657,7 @@ function App() {
     }, [])
 
     // set up event listeners for filter option changes, and update filter options
-    React.useEffect(() => {
+    useEffect(() => {
         let filterFrequencyRange = document.getElementById("filter-frequency-range");
         let filterBaseFrequencyRange = document.getElementById("filter-base-frequency-range");
         let filterOctavesRange = document.getElementById("filter-octaves-range");
@@ -740,7 +740,7 @@ function App() {
 
 
     // set octave state
-    React.useEffect(() => {
+    useEffect(() => {
         polySynth.releaseAll();
         octaveRef.current = octave;
     }, [octave, ])
@@ -833,6 +833,15 @@ function App() {
 
     // update all options when preset changes
     
+    // update preset name when changed
+    const handlePresetNameChange = React.useCallback((e) => {
+        updatePresetOptions(
+            {
+                type: "name",
+                payload: e.target.value
+            }
+        )
+    }, []);
 
     return (
         <div className="App">
@@ -844,7 +853,7 @@ function App() {
                             <div className="sub-label">Created by Justis Corbett</div>
                         </div>
                         <div className="presets-container"> 
-                            <input  id="preset-name" className="preset-display" value="No Preset">
+                            <input  id="preset-name" className="preset-display" value={presetOptions.name} onChange={handlePresetNameChange}>
                                 
                             </input>
                             <div onClick={() => downloadPreset(presetOptions)} className='preset-button' id="save">
