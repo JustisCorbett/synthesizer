@@ -844,12 +844,59 @@ function App() {
     }, [filterOptions,]);
 
     // update all options when preset changes
-    const handleOptionsChangesWithPresetChange = React.useCallback(() => {
+    const handleOptionsChangesWithPreset = React.useCallback(() => {
         polySynth.releaseAll(Tone.now());
         updatePolySynthOptions(
-
+            {
+                type: "REPLACE_STATE",
+                payload: presetOptions.polySynth
+            }
         )
-    })
+        updateChorusOptions(
+            {
+                type: "REPLACE_STATE",
+                payload: presetOptions.chorus
+            }
+        )
+        updateDelayOptions(
+            {
+                type: "REPLACE_STATE",
+                payload: presetOptions.delay
+            }
+        )
+        updateFilterOptions(
+            {
+                type: "REPLACE_STATE",
+                payload: presetOptions.filter
+            }
+        )
+        updateReverbOptions(
+            {
+                type: "REPLACE_STATE",
+                payload: presetOptions.reverb
+            }
+        )
+    }, []);
+
+    // update presetoptions when loading new preset file
+    const handleNewPresetFile = React.useCallback((e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = (event) => {
+            // The file's text will be printed here
+            const data = JSON.parse(event.target.result)
+            console.log(data)
+            updatePresetOptions(
+                {
+                    type: "REPLACE_STATE",
+                    payload: data
+                }
+            )
+        };
+        
+        reader.readAsText(file);
+    }, [])
     
     // update preset name when changed
     const handlePresetNameChange = React.useCallback((e) => {
@@ -871,15 +918,14 @@ function App() {
                             <div className="sub-label">Created by Justis Corbett</div>
                         </div>
                         <div className="presets-container"> 
-                            <input  id="preset-name" className="preset-display" value={presetOptions.name} onChange={handlePresetNameChange}>
-                            </input>
+                            <input  id="preset-name" className="preset-display" value={presetOptions.name} onChange={handlePresetNameChange} />
                             <div onClick={() => downloadPreset(presetOptions)} className='preset-button' id="save">
                                 Save
                             </div>
-                            <div className='preset-button' id="load">
+                            <label className='preset-button' id="load">
                                 Load
-                                <input className="fully-hidden" type="file" />
-                            </div>
+                                <input className="fully-hidden" type="file" onChange={handleNewPresetFile} />
+                            </label>
                         </div>
                     </div>
                     
