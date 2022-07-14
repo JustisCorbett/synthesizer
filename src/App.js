@@ -506,7 +506,6 @@ function App() {
         }
     
         const handleCountChange = (e) => {
-            console.log("changing count")
             updatePolySynthOptions(
                 {
                 type: "oscillator",
@@ -873,7 +872,6 @@ function App() {
                 payload: presetOptions.reverbOptions
             }
         )
-        console.log(polySynthOptions)
     }, []);
 
     // update presetoptions when loading new preset file
@@ -882,7 +880,6 @@ function App() {
         reader.onload = (event) => {
             // The file's text will be printed here
             const data = JSON.parse(event.target.result);
-            console.log(data)
             updatePresetOptions(
                 {
                     type: "REPLACE_STATE",
