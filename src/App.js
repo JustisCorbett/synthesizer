@@ -92,6 +92,7 @@ function App() {
         (state, action) => {
             switch (action.type) {
                 case "REPLACE_STATE":
+                    console.log("replaceing synth state")
                     return action.payload
                 case "synth":
                     return {
@@ -840,7 +841,7 @@ function App() {
     }, [filterOptions,]);
 
     // update all options when preset changes
-    const updateOptionsChangesWithPreset = React.useCallback(() => {
+    useEffect(() => {
         polySynth.releaseAll(Tone.now());
         updatePolySynthOptions(
             {
@@ -872,34 +873,34 @@ function App() {
                 payload: presetOptions.reverbOptions
             }
         )
-    }, []);
+    }, [presetOptions]);
 
     // update presetoptions when loading new preset file
-    const handleNewPresetFile = React.useCallback((e) => {
+    const handleNewPresetFile = (e) => {
         const file = e.target.files[0];
         reader.onload = (event) => {
             // The file's text will be printed here
             const data = JSON.parse(event.target.result);
+            console.log(data)
             updatePresetOptions(
                 {
                     type: "REPLACE_STATE",
                     payload: data
                 }
             )
-            updateOptionsChangesWithPreset();
         };
         reader.readAsText(file);
-    }, [])
+    };
     
     // update preset name when changed
-    const handlePresetNameChange = React.useCallback((e) => {
+    const handlePresetNameChange = (e) => {
         updatePresetOptions(
             {
                 type: "name",
                 payload: e.target.value
             }
         )
-    }, []);
+    }
     return (
         <div className="App">
             <div id="synth-container">
@@ -927,7 +928,7 @@ function App() {
                             <div id="master" className= {(!isVisibles.master? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="volume-range" type="range" min="-50" max="0" defaultValue={-12}/>
+                                        <input id="volume-range" type="range" min="-50" max="0" defaultValue={polySynthOptions.volume}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Volume</div>
