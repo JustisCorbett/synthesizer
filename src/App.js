@@ -316,7 +316,6 @@ function App() {
     const [octave, setOctave] = React.useState(3);
     const octaveRef = React.useRef(3);
     const [activeVoices, setActiveVoices] = React.useState(polySynth.activeVoices);
-    const [isLoading, setIsLoading] = React.useState(false);
 
 
     // toggle visibility of controls
@@ -507,6 +506,7 @@ function App() {
         }
     
         const handleCountChange = (e) => {
+            console.log("changing count")
             updatePolySynthOptions(
                 {
                 type: "oscillator",
@@ -878,7 +878,6 @@ function App() {
 
     // update presetoptions when loading new preset file
     const handleNewPresetFile = React.useCallback((e) => {
-        setIsLoading(true);
         const file = e.target.files[0];
         reader.onload = (event) => {
             // The file's text will be printed here
@@ -891,7 +890,6 @@ function App() {
                 }
             )
             updateOptionsChangesWithPreset();
-            setIsLoading(false);
         };
         reader.readAsText(file);
     }, [])
@@ -905,13 +903,6 @@ function App() {
             }
         )
     }, []);
-    if (isLoading) {
-        return (
-            <div className="App">
-                testet
-            </div>
-        )
-    }
     return (
         <div className="App">
             <div id="synth-container">
