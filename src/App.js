@@ -1,20 +1,18 @@
 import * as Tone from 'tone'
 import './App.css';
 import React, { useEffect } from "react";
-//import { Context } from 'tone';
+
 
 const delay = new Tone.FeedbackDelay("8n", 0.5);
 const chorus = new Tone.Chorus(4, 10, 0.1).start();
 const reverb = new Tone.Reverb();
 const filter = new Tone.AutoFilter().start();
 
-//const filter = React.useRef(new Tone.Filter(440, "lowpass").toDestination());
 const polySynth = new Tone.PolySynth()
     .chain(filter, delay, reverb, chorus, Tone.Destination);
 
 
 const downloadPreset = (data) => {
-    console.log(data);
     const json = JSON.stringify(data);
     const fileName = data.name;
     // Create a blob with the data we want to download as a file
@@ -32,6 +30,8 @@ const downloadPreset = (data) => {
     a.dispatchEvent(clickEvt)
     a.remove()
 }
+
+const reader = new FileReader();
 
 function App() {
 
@@ -316,14 +316,13 @@ function App() {
     const [octave, setOctave] = React.useState(3);
     const octaveRef = React.useRef(3);
     const [activeVoices, setActiveVoices] = React.useState(polySynth.activeVoices);
+    const [isLoading, setIsLoading] = React.useState(false);
 
 
     // toggle visibility of controls
     const toggleVis = (e) => {
-        console.log(e.target.nextElementSibling.id)
         let id = e.target.nextElementSibling.id;
         let newVis = !isVisibles[id];
-        console.log(newVis)
         updateIsVisibles(
             {
                 type: id,
@@ -348,7 +347,6 @@ function App() {
                 key.classList.add("black-highlighted");
             }
             setActiveVoices(polySynth.activeVoices);
-            console.log(polySynth.activeVoices);
         }
     
         const releaseNote = (key) => {
@@ -826,7 +824,6 @@ function App() {
     // update filter with filter options
     useEffect(() => {
         polySynth.releaseAll(Tone.now());
-        console.log(filter);
         filter.set({
             frequency: filterOptions.frequency,
             baseFrequency: filterOptions.baseFrequency,
@@ -844,48 +841,48 @@ function App() {
     }, [filterOptions,]);
 
     // update all options when preset changes
-    const handleOptionsChangesWithPreset = React.useCallback(() => {
+    const updateOptionsChangesWithPreset = React.useCallback(() => {
         polySynth.releaseAll(Tone.now());
         updatePolySynthOptions(
             {
                 type: "REPLACE_STATE",
-                payload: presetOptions.polySynth
+                payload: presetOptions.polySynthOptions
             }
         )
         updateChorusOptions(
             {
                 type: "REPLACE_STATE",
-                payload: presetOptions.chorus
+                payload: presetOptions.chorusOptions
             }
         )
         updateDelayOptions(
             {
                 type: "REPLACE_STATE",
-                payload: presetOptions.delay
+                payload: presetOptions.delayOptions
             }
         )
         updateFilterOptions(
             {
                 type: "REPLACE_STATE",
-                payload: presetOptions.filter
+                payload: presetOptions.filterOptions
             }
         )
         updateReverbOptions(
             {
                 type: "REPLACE_STATE",
-                payload: presetOptions.reverb
+                payload: presetOptions.reverbOptions
             }
         )
+        console.log(polySynthOptions)
     }, []);
 
     // update presetoptions when loading new preset file
     const handleNewPresetFile = React.useCallback((e) => {
+        setIsLoading(true);
         const file = e.target.files[0];
-        const reader = new FileReader();
-
         reader.onload = (event) => {
             // The file's text will be printed here
-            const data = JSON.parse(event.target.result)
+            const data = JSON.parse(event.target.result);
             console.log(data)
             updatePresetOptions(
                 {
@@ -893,8 +890,9 @@ function App() {
                     payload: data
                 }
             )
+            updateOptionsChangesWithPreset();
+            setIsLoading(false);
         };
-        
         reader.readAsText(file);
     }, [])
     
@@ -907,7 +905,13 @@ function App() {
             }
         )
     }, []);
-
+    if (isLoading) {
+        return (
+            <div className="App">
+                testet
+            </div>
+        )
+    }
     return (
         <div className="App">
             <div id="synth-container">
@@ -935,7 +939,7 @@ function App() {
                             <div id="master" className= {(!isVisibles.master? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="volume-range" type="range" min="-50" max="0" defaultValue={polySynthOptions.volume}/>
+                                        <input id="volume-range" type="range" min="-50" max="0" defaultValue={-12}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Volume</div>
