@@ -33,39 +33,6 @@ const downloadPreset = (data) => {
 const reader = new FileReader();
 
 function App() {
-    // //oscillator and envelope range inputs
-    // const [octaveRange, setOctaveRange] = useState(null);
-    // const [volumeRange, setVolumeRange] = useState(null);
-    // const [oscRange, setOscRange] = useState(null);
-    // const [spreadRange, setSpreadRange] = useState(null);
-    // const [attackRange, setAttackRange] = useState(null);
-    // const [decayRange, setDecayRange] = useState(null);
-    // const [sustainRange, setSustainRange] = useState(null);
-    // const [releaseRange, setReleaseRange] = useState(null);
-    // const [countRange, setCountRange] = useState(null);
-
-    // //delay range inputs
-    // const [delayTimeRange, setDelayTimeRange = useState(null);
-    // const [delayFeedbackRange = useState(null);
-    // const [delayWetRange = useState(null);
-
-    // //reverb range inputs
-    // const [reverbDecayRange = useState(null);
-    // const [reverbWetRange = useState(null);
-
-    // //chorus range inputs
-    // const [chorusDelayRange = useState(null);
-    // const [chorusWetRange = useState(null);
-    // const [chorusFrequencyRange = useState(null);
-    // const [chorusDepthRange = useState(null);
-
-    // //filter range inputs
-    // const [filterFrequencyRange = useState(null);
-    // const [filterBaseFrequencyRange = useState(null);
-    // const [filterOctavesRange = useState(null);
-    // const [filterTypeRange = useState(null);
-    // const [filterDepthRange = useState(null);
-    // const [filterWetRange = useState(null);
 
     // update the synth options when slider changes
     const handleOscChange = (e) => {
@@ -569,10 +536,25 @@ function App() {
         }
     )
 
-    const [octave, setOctave] = React.useState(3);
-    const octaveRef = React.useRef(3);
-    const [activeVoices, setActiveVoices] = React.useState(polySynth.activeVoices);
+    const [octave, setOctave] = useState(3);
+    const octaveRef = useRef(3);
+    const [activeVoices, setActiveVoices] = useState(polySynth.activeVoices);
+    const [oscTypeValue, setOscTypeValue] = useState(0);
+    const [filterTypeValue, setFilterTypeValue] = useState(0)
 
+
+    // set osc type value for input range
+    useEffect(()=> {
+    //get osc value for range input
+        const waves = ["fatsine", "fatsquare", "fatsawtooth", "fattriangle"];
+        setOscTypeValue(waves.indexOf(polySynthOptions.oscillator.type))
+    }, [polySynthOptions.oscillator.type])
+
+    //set filter type value for input range
+    useEffect(() => {
+        const waves = ["sine", "square", "sawtooth", "triangle"];
+        setFilterTypeValue(waves.indexOf(filterOptions.type))
+    }, [filterOptions.type])
 
     // toggle visibility of controls
     const toggleVis = (e) => {
@@ -838,14 +820,14 @@ function App() {
                             <div id="master" className= {(!isVisibles.master? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="volume-range" onChange={handleVolumeChange} value={polySynthOptions.volume} type="range" min="-50" max="0" defaultValue={polySynthOptions.volume}/>
+                                        <input id="volume-range" onChange={handleVolumeChange} value={polySynthOptions.volume} type="range" min="-50" max="0" />
                                     </div>
                                     <div className="control-row">
                                         <div>Volume</div>
                                         <div className="display">{polySynthOptions.volume}db</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="octave-range" onChange={handleOctaveChange} type="range" min="0" max="2" defaultValue={1}/>
+                                        <input id="octave-range" onChange={handleOctaveChange} value={polySynthOptions.octave} type="range" min="0" max="2" />
                                     </div>
                                     <div className="control-row">
                                         <div>Octave</div>
@@ -859,14 +841,14 @@ function App() {
                             <div id="oscillator" className={(!isVisibles.oscillator? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="osc-range" onChange={handleOscChange} type="range" min="0" max="3" defaultValue={0}/>
+                                        <input id="osc-range" onChange={handleOscChange} value={oscTypeValue}  type="range" min="0" max="3" />
                                     </div>
                                     <div className="control-row">
                                         <div>Waveform </div>
                                         <div className="display">{polySynthOptions.oscillator.type.slice(3)}</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="count-range" onChange={handleCountChange} type="range" min="1" max="3" step={1} defaultValue={polySynthOptions.oscillator.count}/>
+                                        <input id="count-range" onChange={handleCountChange} value={polySynthOptions.oscillator.count} type="range" min="1" max="3" step={1} />
                                     </div>
                                     <div className="control-row">
                                         <div>Count</div>
@@ -875,7 +857,7 @@ function App() {
                                 </div>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="spread-range" onChange={handleSpreadChange} type="range" min="1" max="100" step={1} defaultValue={polySynthOptions.oscillator.spread}/>
+                                        <input id="spread-range" onChange={handleSpreadChange} value={polySynthOptions.oscillator.spread} type="range" min="1" max="100" step={1} />
                                     </div>
                                     <div className="control-row">
                                         <div>Spread</div>
@@ -893,14 +875,14 @@ function App() {
                             <div id="envelope" className={(!isVisibles.envelope? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="attack-range" onChange={handleAttackChange} type="range" min="0" max="500" step={10} defaultValue={polySynthOptions.envelope.attack * 10}/>
+                                        <input id="attack-range" onChange={handleAttackChange} value={polySynthOptions.envelope.attack * 10} type="range" min="0" max="500" step={10} />
                                     </div>
                                     <div className="control-row">
                                         <div>Attack</div>
                                         <div className="display">{polySynthOptions.envelope.attack}s</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="decay-range" onChange={handleDecayChange} type="range" min="10" max="500" step={10} defaultValue={polySynthOptions.envelope.decay * 10}/>
+                                        <input id="decay-range" onChange={handleDecayChange} type="range" min="10" max="500" step={10} />
                                     </div>
                                     <div className="control-row">
                                         <div>Decay</div>
@@ -909,14 +891,14 @@ function App() {
                                 </div>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="sustain-range" onChange={handleSustainChange} type="range" min="0" max="100" step={10} defaultValue={polySynthOptions.envelope.sustain * 100}/>
+                                        <input id="sustain-range" onChange={handleSustainChange} value={polySynthOptions.envelope.sustain * 100} type="range" min="0" max="100" step={10} />
                                     </div>
                                     <div className="control-row">
                                         <div>Sustain</div>
                                         <div className="display">{polySynthOptions.envelope.sustain * 100}%</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="release-range" onChange={handleReleaseChange} type="range" min="10" max="500" step={10} defaultValue={polySynthOptions.envelope.release * 10}/>
+                                        <input id="release-range" onChange={handleReleaseChange} type="range" min="10" max="500" step={10} />
                                     </div>
                                     <div className="control-row">
                                         <div>Release</div>
@@ -930,14 +912,14 @@ function App() {
                             <div id="filter" className={(!isVisibles.filter? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="filter-frequency-range" onChange={handleFilterFrequencyChange} type="range" min="1" max="100" step={1} defaultValue={filterOptions.frequency * 10}/>
+                                        <input id="filter-frequency-range" onChange={handleFilterFrequencyChange} value={filterOptions.frequency * 10} type="range" min="1" max="100" step={1} />
                                     </div>
                                     <div className="control-row">
                                         <div>LFO Frequency</div>
                                         <div className="display">{filterOptions.frequency}hz</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="filter-base-frequency-range" onChange={handleFilterBaseFrequencyChange} type="range" min="10" max="20000" step={10} defaultValue={filterOptions.baseFrequency}/>
+                                        <input id="filter-base-frequency-range" onChange={handleFilterBaseFrequencyChange} value={filterOptions.baseFrequency} type="range" min="10" max="20000" step={10} />
                                     </div>
                                     <div className="control-row">
                                         <div>Min Cutoff</div>
@@ -946,14 +928,14 @@ function App() {
                                 </div>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="filter-octaves-range" onChange={handleFilterOctavesChange} type="range" min="1" max="10" step={1} defaultValue={filterOptions.octaves}/>
+                                        <input id="filter-octaves-range" onChange={handleFilterOctavesChange} value={filterOptions.octaves} type="range" min="1" max="10" step={1} />
                                     </div>
                                     <div className="control-row">
                                         <div>Max Cutoff</div>
                                         <div className="display">+{filterOptions.octaves}oct</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="filter-depth-range" onChange={handleFilterDepthChange} type="range" min="0" max="10" step={1} defaultValue={filterOptions.depth * 10}/>
+                                        <input id="filter-depth-range" onChange={handleFilterDepthChange} value={filterOptions.depth * 10} type="range" min="0" max="10" step={1} />
                                     </div>
                                     <div className="control-row">
                                         <div>LFO Effect</div>
@@ -962,14 +944,14 @@ function App() {
                                 </div>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="filter-type-range" onChange={handleFilterTypeChange} type="range" min="0" max="3" step={1} defaultValue={0}/>
+                                        <input id="filter-type-range" onChange={handleFilterTypeChange} value={filterTypeValue} type="range" min="0" max="3" step={1} />
                                     </div>
                                     <div className="control-row">
                                         <div>LFO Wave</div>
                                         <div className="display">{filterOptions.type}</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="filter-wet-range" onChange={handleFilterWetChange} type="range" min="0" max="100" step={1} defaultValue={filterOptions.wet * 100}/>
+                                        <input id="filter-wet-range" onChange={handleFilterWetChange} value={filterOptions.wet * 100} type="range" min="0" max="100" step={1} />
                                     </div>
                                     <div className="control-row">
                                         <div>Wet</div>
@@ -983,14 +965,14 @@ function App() {
                             <div id="delay" className={(!isVisibles.delay? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="delay-time-range" onChange={handleDelayTimeChange} type="range" min="10" max="100" step={10} defaultValue={delayOptions.delayTime * 100}/>
+                                        <input id="delay-time-range" onChange={handleDelayTimeChange} value={delayOptions.delayTime * 100} type="range" min="10" max="100" step={10} />
                                     </div>
                                     <div className="control-row">
                                         <div>Time</div>
                                         <div className="display">{delayOptions.delayTime}s</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="delay-feedback-range" onChange={handleDelayFeedbackChange} type="range" min="10" max="100" step={10} defaultValue={delayOptions.feedback * 100}/>
+                                        <input id="delay-feedback-range" onChange={handleDelayFeedbackChange} value={delayOptions.feedback * 100} type="range" min="10" max="100" step={10} />
                                     </div>
                                     <div className="control-row">
                                         <div>Feedback</div>
@@ -999,7 +981,7 @@ function App() {
                                 </div>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="delay-wet-range" onChange={handleDelayWetChange} type="range" min="0" max="100" step={1} defaultValue={delayOptions.wet * 100}/>
+                                        <input id="delay-wet-range" onChange={handleDelayWetChange} value={delayOptions.wet * 100} type="range" min="0" max="100" step={1} />
                                     </div>
                                     <div className="control-row">
                                         <div>Wet</div>
@@ -1013,14 +995,14 @@ function App() {
                             <div id="reverb" className={(!isVisibles.reverb? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="reverb-decay-range" onChange={handleReverbDecayChange} type="range" min="10" max="1000" step={10} defaultValue={reverbOptions.decay * 100}/>
+                                        <input id="reverb-decay-range" onChange={handleReverbDecayChange} value={reverbOptions.decay * 100} type="range" min="10" max="1000" step={10} />
                                     </div>
                                     <div className="control-row">
                                         <div>Size</div>
                                         <div className="display">{reverbOptions.decay}s</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="reverb-wet-range" onChange={handleReverbWetChange} type="range" min="0" max="100" step={1} defaultValue={reverbOptions.wet * 100}/>
+                                        <input id="reverb-wet-range" onChange={handleReverbWetChange} value={reverbOptions.wet * 100} type="range" min="0" max="100" step={1}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Wet</div>
@@ -1034,14 +1016,14 @@ function App() {
                             <div id="chorus" className={(!isVisibles.chorus? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="chorus-depth-range" onChange={handleChorusDepthChange} type="range" min="0" max="100" step={10} defaultValue={chorusOptions.depth * 100}/>
+                                        <input id="chorus-depth-range" onChange={handleChorusDepthChange} value={chorusOptions.depth * 100} type="range" min="0" max="100" step={10} />
                                     </div>
                                     <div className="control-row">
                                         <div>Depth</div>
                                         <div className="display">{chorusOptions.depth * 100}%</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="chorus-delay-range" onChange={handleChorusDelayChange} type="range" min="1" max="50" step={1} defaultValue={chorusOptions.delayTime * 10}/>
+                                        <input id="chorus-delay-range" onChange={handleChorusDelayChange} value={chorusOptions.delayTime * 10} type="range" min="1" max="50" step={1} />
                                     </div>
                                     <div className="control-row">
                                         <div>Delay</div>
@@ -1050,14 +1032,14 @@ function App() {
                                 </div>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="chorus-frequency-range" onChange={handleChorusFrequencyChange} type="range" min="1" max="100" step={1} defaultValue={chorusOptions.frequency * 10}/>
+                                        <input id="chorus-frequency-range" onChange={handleChorusFrequencyChange} value={chorusOptions.frequency * 10} type="range" min="1" max="100" step={1} />
                                     </div>
                                     <div className="control-row">
                                         <div>Frequency</div>
                                         <div className="display">{chorusOptions.frequency}hz</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="chorus-wet-range" onChange={handleChorusWetChange} type="range" min="0" max="100" step={1} defaultValue={chorusOptions.wet * 100}/>
+                                        <input id="chorus-wet-range" onChange={handleChorusWetChange} value={chorusOptions.wet * 100} type="range" min="0" max="100" step={1} />
                                     </div>
                                     <div className="control-row">
                                         <div>Wet</div>
