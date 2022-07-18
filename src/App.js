@@ -1,6 +1,6 @@
 import * as Tone from 'tone'
 import './App.css';
-import React, { useEffect, useRef, useReducer } from "react";
+import React, { useEffect, useRef, useReducer, useState } from "react";
 
 const delay = new Tone.FeedbackDelay("8n", 0.5);
 const chorus = new Tone.Chorus(4, 10, 0.1).start();
@@ -33,41 +33,264 @@ const downloadPreset = (data) => {
 const reader = new FileReader();
 
 function App() {
-    //oscillator and envelope range inputs
-    const octaveRange = useRef(null);
-    const volumeRange = useRef(null);
-    const oscRange = useRef(null);
-    const spreadRange = useRef(null);
-    const attackRange = useRef(null);
-    const decayRange = useRef(null);
-    const sustainRange = useRef(null);
-    const releaseRange = useRef(null);
-    const countRange = useRef(null);
+    // //oscillator and envelope range inputs
+    // const [octaveRange, setOctaveRange] = useState(null);
+    // const [volumeRange, setVolumeRange] = useState(null);
+    // const [oscRange, setOscRange] = useState(null);
+    // const [spreadRange, setSpreadRange] = useState(null);
+    // const [attackRange, setAttackRange] = useState(null);
+    // const [decayRange, setDecayRange] = useState(null);
+    // const [sustainRange, setSustainRange] = useState(null);
+    // const [releaseRange, setReleaseRange] = useState(null);
+    // const [countRange, setCountRange] = useState(null);
 
-    //delay range inputs
-    const delayTimeRange = useRef(null);
-    const delayFeedbackRange = useRef(null);
-    const delayWetRange = useRef(null);
+    // //delay range inputs
+    // const [delayTimeRange, setDelayTimeRange = useState(null);
+    // const [delayFeedbackRange = useState(null);
+    // const [delayWetRange = useState(null);
 
-    //reverb range inputs
-    const reverbDecayRange = useRef(null);
-    const reverbWetRange = useRef(null);
+    // //reverb range inputs
+    // const [reverbDecayRange = useState(null);
+    // const [reverbWetRange = useState(null);
 
-    //chorus range inputs
-    const chorusDelayRange = useRef(null);
-    const chorusWetRange = useRef(null);
-    const chorusFrequencyRange = useRef(null);
-    const chorusDepthRange = useRef(null);
+    // //chorus range inputs
+    // const [chorusDelayRange = useState(null);
+    // const [chorusWetRange = useState(null);
+    // const [chorusFrequencyRange = useState(null);
+    // const [chorusDepthRange = useState(null);
 
-    //filter range inputs
-    const filterFrequencyRange = useRef(null);
-    const filterBaseFrequencyRange = useRef(null);
-    const filterOctavesRange = useRef(null);
-    const filterTypeRange = useRef(null);
-    const filterDepthRange = useRef(null);
-    const filterWetRange = useRef(null);
+    // //filter range inputs
+    // const [filterFrequencyRange = useState(null);
+    // const [filterBaseFrequencyRange = useState(null);
+    // const [filterOctavesRange = useState(null);
+    // const [filterTypeRange = useState(null);
+    // const [filterDepthRange = useState(null);
+    // const [filterWetRange = useState(null);
 
-    const [isVisibles, updateIsVisibles] = React.useReducer(
+    // update the synth options when slider changes
+    const handleOscChange = (e) => {
+        const waves = ["fatsine", "fatsquare", "fatsawtooth", "fattriangle"];
+        let wave = waves[e.target.value];
+        updatePolySynthOptions(
+            {
+            type: "oscillator",
+            payload: {
+                type: wave
+            }
+        });
+    }
+    // change octave state when slider is moved
+    const handleOctaveChange = (e) => {
+        const selection = e.target.value;
+        switch (selection) {
+            case "0":
+                setOctave(0);
+                break;
+            case "1":
+                setOctave(3);
+                break;
+            case "2":
+                setOctave(5);
+                break;
+            default :
+                setOctave(0);
+        };
+    }
+    const handleVolumeChange = (e) => {
+        updatePolySynthOptions(
+            {
+            type: "synth",
+            payload: {
+                volume: e.target.value
+            }
+        });
+    }
+    const handleSpreadChange = (e) => {
+        updatePolySynthOptions(
+            {
+            type: "oscillator",
+            payload: {
+                spread: parseInt(e.target.value)
+            }
+        });
+    }
+    const handleAttackChange = (e) => {
+        updatePolySynthOptions(
+            {
+            type: "envelope",
+            payload: {
+                attack: parseInt(e.target.value) / 100
+            }
+        });
+    }
+    const handleDecayChange = (e) => {
+        updatePolySynthOptions(
+            {
+            type: "envelope",
+            payload: {
+                decay: parseInt(e.target.value) / 100
+            }
+        });
+    }
+    const handleSustainChange = (e) => {
+        updatePolySynthOptions(
+            {
+            type: "envelope",
+            payload: {
+                sustain: parseInt(e.target.value) / 100
+            }
+        });
+    }
+    const handleReleaseChange = (e) => {
+        updatePolySynthOptions(
+            {
+            type: "envelope",
+            payload: {
+                release: parseInt(e.target.value) / 100
+            }
+        });
+    }
+    const handleCountChange = (e) => {
+        updatePolySynthOptions(
+            {
+            type: "oscillator",
+            payload: {
+                count: parseInt(e.target.value)
+            }
+        });
+    }
+
+    // handle delay option changes
+    const handleDelayTimeChange = (e) => {
+        updateDelayOptions(
+            {
+            type: "delayTime",
+            payload: parseInt(e.target.value) / 100
+        });
+    }
+    
+    const handleDelayFeedbackChange = (e) => {
+        updateDelayOptions(
+            {
+            type: "feedback",
+            payload: parseInt(e.target.value) / 100
+        });
+    }
+
+    const handleDelayWetChange = (e) => {
+        updateDelayOptions(
+            {
+            type: "wet",
+            payload: parseInt(e.target.value) / 100
+        });
+    }
+
+    //handle reverb optioon changes
+    const handleReverbDecayChange = (e) => {
+        updateReverbOptions(
+            {
+            type: "decay",
+            payload: parseInt(e.target.value) / 100
+        });
+    }
+
+    const handleReverbWetChange = (e) => {
+        updateReverbOptions(
+            {
+            type: "wet",
+            payload: parseInt(e.target.value) / 100
+        });
+    }
+
+    // handle chorus option changes
+    const handleChorusDelayChange = (e) => {
+        updateChorusOptions(
+            {
+            type: "delayTime",
+            payload: parseInt(e.target.value) / 10
+        });
+    }
+
+    const handleChorusWetChange = (e) => {
+        updateChorusOptions(
+            {
+            type: "wet",
+            payload: parseInt(e.target.value) / 100
+        });
+    }
+
+    const handleChorusFrequencyChange = (e) => {
+        updateChorusOptions(
+            {
+            type: "frequency",
+            payload: parseInt(e.target.value) / 10
+        });
+    }
+
+    const handleChorusDepthChange = (e) => {
+        updateChorusOptions(
+            {
+            type: "depth",
+            payload: parseInt(e.target.value) / 100
+        });
+    }
+
+    //handle filter options changes
+    const handleFilterFrequencyChange = (e) => {
+        updateFilterOptions(
+            {
+                type: "frequency",
+                payload: parseInt(e.target.value) / 10
+            }
+        );
+    }
+    
+    const handleFilterBaseFrequencyChange = (e) => {
+        updateFilterOptions(
+            {
+                type: "baseFrequency",
+                payload: parseInt(e.target.value)
+            }
+        );
+    }
+
+    const handleFilterOctavesChange = (e) => {
+        updateFilterOptions(
+            {
+                type: "octaves",
+                payload: parseInt(e.target.value)
+            }
+        );
+    }
+
+    const handleFilterTypeChange = (e) => {
+        const waves = ["sine", "square", "sawtooth", "triangle"];
+        let wave = waves[e.target.value];
+        updateFilterOptions(
+            {
+            type: "type",
+            payload: wave
+        });
+    }
+
+    const handleFilterDepthChange = (e) => {
+        updateFilterOptions(
+            {
+                type: "depth",
+                payload: parseInt(e.target.value) / 10
+            }
+        );
+    }
+    
+    const handleFilterWetChange = (e) => {
+        updateFilterOptions(
+            {
+                type: "wet",
+                payload: parseInt(e.target.value) / 100
+            }
+        );
+    }
+    const [isVisibles, updateIsVisibles] = useReducer(
         (state, action) => {
             switch (action.type) {
                 case "master":
@@ -120,7 +343,7 @@ function App() {
         }
     );
     
-    const [polySynthOptions, updatePolySynthOptions] = React.useReducer(
+    const [polySynthOptions, updatePolySynthOptions] = useReducer(
         (state, action) => {
             switch (action.type) {
                 case "REPLACE_STATE":
@@ -158,7 +381,7 @@ function App() {
             envelope: {attack: 0.1, decay: 0.1, sustain: 1, release: 0.5}, 
         });
 
-    const [delayOptions, updateDelayOptions] = React.useReducer(
+    const [delayOptions, updateDelayOptions] = useReducer(
         (state, action) => {
             switch (action.type) {
                 case "REPLACE_STATE":
@@ -188,7 +411,7 @@ function App() {
             wet: 0
         });
 
-    const [reverbOptions, updateReverbOptions] = React.useReducer(
+    const [reverbOptions, updateReverbOptions] = useReducer(
         (state, action) => {
             switch (action.type) {
                 case "REPLACE_STATE":
@@ -212,7 +435,7 @@ function App() {
             decay: 2.5
         });
 
-    const [chorusOptions, updateChorusOptions] = React.useReducer(
+    const [chorusOptions, updateChorusOptions] = useReducer(
         (state, action) => {
             switch (action.type) {
                 case "REPLACE_STATE":
@@ -248,7 +471,7 @@ function App() {
             delayTime: 2.5
         });
     
-    const [filterOptions, updateFilterOptions] = React.useReducer(
+    const [filterOptions, updateFilterOptions] = useReducer(
         (state, action) => {
             switch (action.type) {
                 case "REPLACE_STATE":
@@ -297,7 +520,7 @@ function App() {
         }
     );
 
-    const [presetOptions, updatePresetOptions] = React.useReducer(
+    const [presetOptions, updatePresetOptions] = useReducer(
         (state, action) => {
             switch (action.type) {
                 case "REPLACE_STATE":
@@ -434,352 +657,6 @@ function App() {
         }
     }, []);
 
-    // set up event listeners for oscillator options, and update the oscillator options
-    useEffect(() => {
-
-        let octaveRange = document.getElementById("octave-range");
-        let volumeRange = document.getElementById("volume-range");
-        let oscRange = document.getElementById("osc-range");
-        let spreadRange = document.getElementById("spread-range");
-        let attackRange = document.getElementById("attack-range");
-        let decayRange = document.getElementById("decay-range");
-        let sustainRange = document.getElementById("sustain-range");
-        let releaseRange = document.getElementById("release-range");
-        let countRange = document.getElementById("count-range");
-
-        // update the synth options when slider changes
-        const handleOscChange = (e) => {
-            const waves = ["fatsine", "fatsquare", "fatsawtooth", "fattriangle"];
-            let wave = waves[e.target.value];
-            updatePolySynthOptions(
-                {
-                type: "oscillator",
-                payload: {
-                    type: wave
-                }
-            });
-        }
-
-        // change octave state when slider is moved
-        const handleOctaveChange = (e) => {
-            const selection = e.target.value;
-            switch (selection) {
-                case "0":
-                    setOctave(0);
-                    break;
-                case "1":
-                    setOctave(3);
-                    break;
-                case "2":
-                    setOctave(5);
-                    break;
-                default :
-                    setOctave(0);
-            };
-        }
-
-        const handleVolumeChange = (e) => {
-            updatePolySynthOptions(
-                {
-                type: "synth",
-                payload: {
-                    volume: e.target.value
-                }
-            });
-        }
-    
-        const handleSpreadChange = (e) => {
-            updatePolySynthOptions(
-                {
-                type: "oscillator",
-                payload: {
-                    spread: parseInt(e.target.value)
-                }
-            });
-        }
-    
-        const handleAttackChange = (e) => {
-            updatePolySynthOptions(
-                {
-                type: "envelope",
-                payload: {
-                    attack: parseInt(e.target.value) / 100
-                }
-            });
-        }
-    
-        const handleDecayChange = (e) => {
-            updatePolySynthOptions(
-                {
-                type: "envelope",
-                payload: {
-                    decay: parseInt(e.target.value) / 100
-                }
-            });
-        }
-    
-        const handleSustainChange = (e) => {
-            updatePolySynthOptions(
-                {
-                type: "envelope",
-                payload: {
-                    sustain: parseInt(e.target.value) / 100
-                }
-            });
-        }
-    
-        const handleReleaseChange = (e) => {
-            updatePolySynthOptions(
-                {
-                type: "envelope",
-                payload: {
-                    release: parseInt(e.target.value) / 100
-                }
-            });
-        }
-    
-        const handleCountChange = (e) => {
-            updatePolySynthOptions(
-                {
-                type: "oscillator",
-                payload: {
-                    count: parseInt(e.target.value)
-                }
-            });
-        }
-
-        octaveRange.addEventListener("change", handleOctaveChange);
-        volumeRange.addEventListener("change", handleVolumeChange);
-        oscRange.addEventListener("change", handleOscChange);
-        spreadRange.addEventListener("change", handleSpreadChange);
-        attackRange.addEventListener("change", handleAttackChange);
-        decayRange.addEventListener("change", handleDecayChange);
-        sustainRange.addEventListener("change", handleSustainChange);
-        releaseRange.addEventListener("change", handleReleaseChange);
-        countRange.addEventListener("change", handleCountChange);
-
-        return () => {
-            octaveRange.removeEventListener("change", handleOctaveChange);
-            volumeRange.removeEventListener("change", handleVolumeChange);
-            oscRange.removeEventListener("change", handleOscChange);
-            spreadRange.removeEventListener("change", handleSpreadChange);
-            attackRange.removeEventListener("change", handleAttackChange);
-            decayRange.removeEventListener("change", handleDecayChange);
-            sustainRange.removeEventListener("change", handleSustainChange);
-            releaseRange.removeEventListener("change", handleReleaseChange);
-            countRange.removeEventListener("change", handleCountChange);
-        }
-
-    }, [])
-
-    // set up event listeners for delay option changes, and update delay options
-    useEffect(() => {
-        let delayTimeRange = document.getElementById("delay-time-range");
-        let delayFeedbackRange = document.getElementById("delay-feedback-range");
-        let delayWetRange = document.getElementById("delay-wet-range");
-
-        const handleDelayTimeChange = (e) => {
-            updateDelayOptions(
-                {
-                type: "delayTime",
-                payload: parseInt(e.target.value) / 100
-            });
-        }
-        
-        const handleDelayFeedbackChange = (e) => {
-            updateDelayOptions(
-                {
-                type: "feedback",
-                payload: parseInt(e.target.value) / 100
-            });
-        }
-
-        const handleDelayWetChange = (e) => {
-            updateDelayOptions(
-                {
-                type: "wet",
-                payload: parseInt(e.target.value) / 100
-            });
-        }
-
-        delayTimeRange.addEventListener("change", handleDelayTimeChange);
-        delayFeedbackRange.addEventListener("change", handleDelayFeedbackChange);
-        delayWetRange.addEventListener("change", handleDelayWetChange);
-
-        return () => {
-            delayTimeRange.removeEventListener("change", handleDelayTimeChange);
-            delayFeedbackRange.removeEventListener("change", handleDelayFeedbackChange);
-            delayWetRange.removeEventListener("change", handleDelayWetChange);
-        }
-
-    }, [])
-
-    // set up event listeners for reverb option changes, and update reverb options
-    useEffect(() => {
-        let reverbDecayRange = document.getElementById("reverb-decay-range");
-        let reverbWetRange = document.getElementById("reverb-wet-range");
-
-        const handleReverbDecayChange = (e) => {
-            updateReverbOptions(
-                {
-                type: "decay",
-                payload: parseInt(e.target.value) / 100
-            });
-        }
-
-        const handleReverbWetChange = (e) => {
-            updateReverbOptions(
-                {
-                type: "wet",
-                payload: parseInt(e.target.value) / 100
-            });
-        }
-
-        reverbDecayRange.addEventListener("change", handleReverbDecayChange);
-        reverbWetRange.addEventListener("change", handleReverbWetChange);
-
-        return () => {
-            reverbDecayRange.removeEventListener("change", handleReverbDecayChange);
-            reverbWetRange.removeEventListener("change", handleReverbWetChange);
-        }
-
-    }, [])
-
-    // set up event listeners for chorus option changes, and update chorus options
-    useEffect(() => {
-        let chorusDelayRange = document.getElementById("chorus-delay-range");
-        let chorusWetRange = document.getElementById("chorus-wet-range");
-        let chorusFrequencyRange = document.getElementById("chorus-frequency-range");
-        let chorusDepthRange = document.getElementById("chorus-depth-range");
-
-        const handleChorusDelayChange = (e) => {
-            updateChorusOptions(
-                {
-                type: "delayTime",
-                payload: parseInt(e.target.value) / 10
-            });
-        }
-
-        const handleChorusWetChange = (e) => {
-            updateChorusOptions(
-                {
-                type: "wet",
-                payload: parseInt(e.target.value) / 100
-            });
-        }
-
-        const handleChorusFrequencyChange = (e) => {
-            updateChorusOptions(
-                {
-                type: "frequency",
-                payload: parseInt(e.target.value) / 10
-            });
-        }
-
-        const handleChorusDepthChange = (e) => {
-            updateChorusOptions(
-                {
-                type: "depth",
-                payload: parseInt(e.target.value) / 100
-            });
-        }
-
-        chorusDelayRange.addEventListener("change", handleChorusDelayChange);
-        chorusWetRange.addEventListener("change", handleChorusWetChange);
-        chorusFrequencyRange.addEventListener("change", handleChorusFrequencyChange);
-        chorusDepthRange.addEventListener("change", handleChorusDepthChange);
-
-        return () => {
-            chorusDelayRange.removeEventListener("change", handleChorusDelayChange);
-            chorusWetRange.removeEventListener("change", handleChorusWetChange);
-            chorusFrequencyRange.removeEventListener("change", handleChorusFrequencyChange);
-            chorusDepthRange.removeEventListener("change", handleChorusDepthChange);
-        }
-
-    }, [])
-
-    // set up event listeners for filter option changes, and update filter options
-    useEffect(() => {
-        let filterFrequencyRange = document.getElementById("filter-frequency-range");
-        let filterBaseFrequencyRange = document.getElementById("filter-base-frequency-range");
-        let filterOctavesRange = document.getElementById("filter-octaves-range");
-        let filterTypeRange = document.getElementById("filter-type-range");
-        let filterDepthRange = document.getElementById("filter-depth-range");
-        let filterWetRange = document.getElementById("filter-wet-range")
- 
-        const handleFilterFrequencyChange = (e) => {
-            updateFilterOptions(
-                {
-                    type: "frequency",
-                    payload: parseInt(e.target.value) / 10
-                }
-            );
-        }
-        
-        const handleFilterBaseFrequencyChange = (e) => {
-            updateFilterOptions(
-                {
-                    type: "baseFrequency",
-                    payload: parseInt(e.target.value)
-                }
-            );
-        }
-
-        const handleFilterOctavesChange = (e) => {
-            updateFilterOptions(
-                {
-                    type: "octaves",
-                    payload: parseInt(e.target.value)
-                }
-            );
-        }
-
-        const handleFilterTypeChange = (e) => {
-            const waves = ["sine", "square", "sawtooth", "triangle"];
-            let wave = waves[e.target.value];
-            updateFilterOptions(
-                {
-                type: "type",
-                payload: wave
-            });
-        }
-
-        const handleFilterDepthChange = (e) => {
-            updateFilterOptions(
-                {
-                    type: "depth",
-                    payload: parseInt(e.target.value) / 10
-                }
-            );
-        }
-        
-        const handleFilterWetChange = (e) => {
-            updateFilterOptions(
-                {
-                    type: "wet",
-                    payload: parseInt(e.target.value) / 100
-                }
-            );
-        }
-
-        filterFrequencyRange.addEventListener("change", handleFilterFrequencyChange);
-        filterBaseFrequencyRange.addEventListener("change", handleFilterBaseFrequencyChange);
-        filterOctavesRange.addEventListener("change", handleFilterOctavesChange);
-        filterTypeRange.addEventListener("change", handleFilterTypeChange);
-        filterDepthRange.addEventListener("change", handleFilterDepthChange);
-        filterWetRange.addEventListener("change", handleFilterWetChange);
-
-        return () => {
-            filterFrequencyRange.removeEventListener("change", handleFilterFrequencyChange);
-            filterBaseFrequencyRange.removeEventListener("change", handleFilterBaseFrequencyChange);
-            filterOctavesRange.removeEventListener("change", handleFilterOctavesChange);
-            filterTypeRange.removeEventListener("change", handleFilterTypeChange);
-            filterDepthRange.removeEventListener("change", handleFilterDepthChange);
-            filterWetRange.removeEventListener("change", handleFilterWetChange);
-        }
-
-    }, [])
-
 
     // set octave state
     useEffect(() => {
@@ -790,15 +667,6 @@ function App() {
 
     // update synth with synth options
     useEffect(() => {
-        let octaveRange = document.getElementById("octave-range");
-        let volumeRange = document.getElementById("volume-range");
-        let oscRange = document.getElementById("osc-range");
-        let spreadRange = document.getElementById("spread-range");
-        let attackRange = document.getElementById("attack-range");
-        let decayRange = document.getElementById("decay-range");
-        let sustainRange = document.getElementById("sustain-range");
-        let releaseRange = document.getElementById("release-range");
-        let countRange = document.getElementById("count-range");
         polySynth.releaseAll(Tone.now());
         polySynth.set({
             volume: polySynthOptions.volume,
@@ -970,14 +838,14 @@ function App() {
                             <div id="master" className= {(!isVisibles.master? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="volume-range" ref={volumeRange} type="range" min="-50" max="0" defaultValue={polySynthOptions.volume}/>
+                                        <input id="volume-range" onChange={handleVolumeChange} value={polySynthOptions.volume} type="range" min="-50" max="0" defaultValue={polySynthOptions.volume}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Volume</div>
                                         <div className="display">{polySynthOptions.volume}db</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="octave-range" ref={octaveRange} type="range" min="0" max="2" defaultValue={1}/>
+                                        <input id="octave-range" onChange={handleOctaveChange} type="range" min="0" max="2" defaultValue={1}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Octave</div>
@@ -991,14 +859,14 @@ function App() {
                             <div id="oscillator" className={(!isVisibles.oscillator? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="osc-range" ref={oscRange} type="range" min="0" max="3" defaultValue={0}/>
+                                        <input id="osc-range" onChange={handleOscChange} type="range" min="0" max="3" defaultValue={0}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Waveform </div>
                                         <div className="display">{polySynthOptions.oscillator.type.slice(3)}</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="count-range" ref={countRange} type="range" min="1" max="3" step={1} defaultValue={polySynthOptions.oscillator.count}/>
+                                        <input id="count-range" onChange={handleCountChange} type="range" min="1" max="3" step={1} defaultValue={polySynthOptions.oscillator.count}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Count</div>
@@ -1007,7 +875,7 @@ function App() {
                                 </div>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="spread-range" ref={spreadRange} type="range" min="1" max="100" step={1} defaultValue={polySynthOptions.oscillator.spread}/>
+                                        <input id="spread-range" onChange={handleSpreadChange} type="range" min="1" max="100" step={1} defaultValue={polySynthOptions.oscillator.spread}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Spread</div>
@@ -1025,14 +893,14 @@ function App() {
                             <div id="envelope" className={(!isVisibles.envelope? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="attack-range" ref={attackRange} type="range" min="0" max="500" step={10} defaultValue={polySynthOptions.envelope.attack * 10}/>
+                                        <input id="attack-range" onChange={handleAttackChange} type="range" min="0" max="500" step={10} defaultValue={polySynthOptions.envelope.attack * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Attack</div>
                                         <div className="display">{polySynthOptions.envelope.attack}s</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="decay-range" ref={decayRange} type="range" min="10" max="500" step={10} defaultValue={polySynthOptions.envelope.decay * 10}/>
+                                        <input id="decay-range" onChange={handleDecayChange} type="range" min="10" max="500" step={10} defaultValue={polySynthOptions.envelope.decay * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Decay</div>
@@ -1041,14 +909,14 @@ function App() {
                                 </div>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="sustain-range" ref={sustainRange} type="range" min="0" max="100" step={10} defaultValue={polySynthOptions.envelope.sustain * 100}/>
+                                        <input id="sustain-range" onChange={handleSustainChange} type="range" min="0" max="100" step={10} defaultValue={polySynthOptions.envelope.sustain * 100}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Sustain</div>
                                         <div className="display">{polySynthOptions.envelope.sustain * 100}%</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="release-range" ref={releaseRange} type="range" min="10" max="500" step={10} defaultValue={polySynthOptions.envelope.release * 10}/>
+                                        <input id="release-range" onChange={handleReleaseChange} type="range" min="10" max="500" step={10} defaultValue={polySynthOptions.envelope.release * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Release</div>
@@ -1062,14 +930,14 @@ function App() {
                             <div id="filter" className={(!isVisibles.filter? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="filter-frequency-range" ref={filterFrequencyRange} type="range" min="1" max="100" step={1} defaultValue={filterOptions.frequency * 10}/>
+                                        <input id="filter-frequency-range" onChange={handleFilterFrequencyChange} type="range" min="1" max="100" step={1} defaultValue={filterOptions.frequency * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>LFO Frequency</div>
                                         <div className="display">{filterOptions.frequency}hz</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="filter-base-frequency-range" ref={filterBaseFrequencyRange} type="range" min="10" max="20000" step={10} defaultValue={filterOptions.baseFrequency}/>
+                                        <input id="filter-base-frequency-range" onChange={handleFilterBaseFrequencyChange} type="range" min="10" max="20000" step={10} defaultValue={filterOptions.baseFrequency}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Min Cutoff</div>
@@ -1078,14 +946,14 @@ function App() {
                                 </div>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="filter-octaves-range" ref={filterOctavesRange} type="range" min="1" max="10" step={1} defaultValue={filterOptions.octaves}/>
+                                        <input id="filter-octaves-range" onChange={handleFilterOctavesChange} type="range" min="1" max="10" step={1} defaultValue={filterOptions.octaves}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Max Cutoff</div>
                                         <div className="display">+{filterOptions.octaves}oct</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="filter-depth-range" ref={filterDepthRange} type="range" min="0" max="10" step={1} defaultValue={filterOptions.depth * 10}/>
+                                        <input id="filter-depth-range" onChange={handleFilterDepthChange} type="range" min="0" max="10" step={1} defaultValue={filterOptions.depth * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>LFO Effect</div>
@@ -1094,14 +962,14 @@ function App() {
                                 </div>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="filter-type-range" ref={filterTypeRange} type="range" min="0" max="3" step={1} defaultValue={0}/>
+                                        <input id="filter-type-range" onChange={handleFilterTypeChange} type="range" min="0" max="3" step={1} defaultValue={0}/>
                                     </div>
                                     <div className="control-row">
                                         <div>LFO Wave</div>
                                         <div className="display">{filterOptions.type}</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="filter-wet-range" ref={filterWetRange} type="range" min="0" max="100" step={1} defaultValue={filterOptions.wet * 100}/>
+                                        <input id="filter-wet-range" onChange={handleFilterWetChange} type="range" min="0" max="100" step={1} defaultValue={filterOptions.wet * 100}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Wet</div>
@@ -1115,14 +983,14 @@ function App() {
                             <div id="delay" className={(!isVisibles.delay? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="delay-time-range" ref={delayTimeRange} type="range" min="10" max="100" step={10} defaultValue={delayOptions.delayTime * 100}/>
+                                        <input id="delay-time-range" onChange={handleDelayTimeChange} type="range" min="10" max="100" step={10} defaultValue={delayOptions.delayTime * 100}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Time</div>
                                         <div className="display">{delayOptions.delayTime}s</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="delay-feedback-range" ref={delayFeedbackRange} type="range" min="10" max="100" step={10} defaultValue={delayOptions.feedback * 100}/>
+                                        <input id="delay-feedback-range" onChange={handleDelayFeedbackChange} type="range" min="10" max="100" step={10} defaultValue={delayOptions.feedback * 100}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Feedback</div>
@@ -1131,7 +999,7 @@ function App() {
                                 </div>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="delay-wet-range" ref={delayWetRange} type="range" min="0" max="100" step={1} defaultValue={delayOptions.wet * 100}/>
+                                        <input id="delay-wet-range" onChange={handleDelayWetChange} type="range" min="0" max="100" step={1} defaultValue={delayOptions.wet * 100}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Wet</div>
@@ -1145,14 +1013,14 @@ function App() {
                             <div id="reverb" className={(!isVisibles.reverb? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="reverb-decay-range" ref={reverbDecayRange} type="range" min="10" max="1000" step={10} defaultValue={reverbOptions.decay * 100}/>
+                                        <input id="reverb-decay-range" onChange={handleReverbDecayChange} type="range" min="10" max="1000" step={10} defaultValue={reverbOptions.decay * 100}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Size</div>
                                         <div className="display">{reverbOptions.decay}s</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="reverb-wet-range" ref={reverbWetRange} type="range" min="0" max="100" step={1} defaultValue={reverbOptions.wet * 100}/>
+                                        <input id="reverb-wet-range" onChange={handleReverbWetChange} type="range" min="0" max="100" step={1} defaultValue={reverbOptions.wet * 100}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Wet</div>
@@ -1166,14 +1034,14 @@ function App() {
                             <div id="chorus" className={(!isVisibles.chorus? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="chorus-depth-range" ref={chorusDepthRange} type="range" min="0" max="100" step={10} defaultValue={chorusOptions.depth * 100}/>
+                                        <input id="chorus-depth-range" onChange={handleChorusDepthChange} type="range" min="0" max="100" step={10} defaultValue={chorusOptions.depth * 100}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Depth</div>
                                         <div className="display">{chorusOptions.depth * 100}%</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="chorus-delay-range" ref={chorusDelayRange} type="range" min="1" max="50" step={1} defaultValue={chorusOptions.delayTime * 10}/>
+                                        <input id="chorus-delay-range" onChange={handleChorusDelayChange} type="range" min="1" max="50" step={1} defaultValue={chorusOptions.delayTime * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Delay</div>
@@ -1182,14 +1050,14 @@ function App() {
                                 </div>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="chorus-frequency-range" ref={chorusFrequencyRange} type="range" min="1" max="100" step={1} defaultValue={chorusOptions.frequency * 10}/>
+                                        <input id="chorus-frequency-range" onChange={handleChorusFrequencyChange} type="range" min="1" max="100" step={1} defaultValue={chorusOptions.frequency * 10}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Frequency</div>
                                         <div className="display">{chorusOptions.frequency}hz</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="chorus-wet-range" ref={chorusWetRange} type="range" min="0" max="100" step={1} defaultValue={chorusOptions.wet * 100}/>
+                                        <input id="chorus-wet-range" onChange={handleChorusWetChange} type="range" min="0" max="100" step={1} defaultValue={chorusOptions.wet * 100}/>
                                     </div>
                                     <div className="control-row">
                                         <div>Wet</div>
