@@ -769,19 +769,21 @@ function App() {
 
     // update presetoptions when loading new preset file
     const handleNewPresetFile = (e) => {
-        const file = e.target.files[0];
-        reader.onload = (event) => {
-            // The file's text will be printed here
-            const data = JSON.parse(event.target.result);
-            console.log(data)
-            updatePresetOptions(
-                {
-                    type: "REPLACE_STATE",
-                    payload: data
-                }
-            )
+        if (e.target.files){
+            const file = e.target.files[0];
+            reader.onload = (event) => {
+                const data = JSON.parse(event.target.result);
+                console.log(data);
+                updatePresetOptions(
+                    {
+                        type: "REPLACE_STATE",
+                        payload: data
+                    }
+                );
+                e.target.value = "";
+            };
+            reader.readAsText(file);
         };
-        reader.readAsText(file);
     };
     
     // update preset name when changed
