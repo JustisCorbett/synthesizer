@@ -877,14 +877,14 @@ function App() {
                             <div id="envelope" className={(!isVisibles.envelope? 'hidden' : undefined) + " control-main-row"}>
                                 <div className="control-col">
                                     <div className="control-row">
-                                        <input id="attack-range" onChange={handleAttackChange} value={polySynthOptions.envelope.attack * 10} type="range" min="0" max="500" step={10} />
+                                        <input id="attack-range" onChange={handleAttackChange} value={polySynthOptions.envelope.attack * 100} type="range" min="0" max="500" step={10} />
                                     </div>
                                     <div className="control-row">
                                         <div>Attack</div>
                                         <div className="display">{polySynthOptions.envelope.attack}s</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="decay-range" onChange={handleDecayChange} type="range" min="10" max="500" step={10} />
+                                        <input id="decay-range" onChange={handleDecayChange} value={polySynthOptions.envelope.decay * 100} type="range" min="10" max="500" step={10} />
                                     </div>
                                     <div className="control-row">
                                         <div>Decay</div>
@@ -900,7 +900,7 @@ function App() {
                                         <div className="display">{polySynthOptions.envelope.sustain * 100}%</div>
                                     </div>
                                     <div className="control-row">
-                                        <input id="release-range" onChange={handleReleaseChange} type="range" min="10" max="500" step={10} />
+                                        <input id="release-range" onChange={handleReleaseChange} value={polySynthOptions.envelope.release * 100} type="range" min="10" max="500" step={10} />
                                     </div>
                                     <div className="control-row">
                                         <div>Release</div>
