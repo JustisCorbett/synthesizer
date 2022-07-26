@@ -7,7 +7,7 @@ const chorus = new Tone.Chorus(4, 10, 0.1).start();
 const reverb = new Tone.Reverb();
 const filter = new Tone.AutoFilter().start();
 
-const polySynth = new Tone.PolySynth()
+let polySynth = new Tone.PolySynth()
     .chain(filter, delay, reverb, chorus, Tone.Destination);
 
 
@@ -118,6 +118,11 @@ function App() {
         });
     }
     const handleCountChange = (e) => {
+        //need to create new synth to stop count not being gc'd bug
+        polySynth.releaseAll();
+        polySynth.dispose();
+        polySynth = new Tone.PolySynth()
+            .chain(filter, delay, reverb, chorus, Tone.Destination);
         updatePolySynthOptions(
             {
             type: "oscillator",
@@ -314,7 +319,6 @@ function App() {
         (state, action) => {
             switch (action.type) {
                 case "REPLACE_STATE":
-                    console.log("replaceing synth state")
                     return action.payload
                 case "synth":
                     return {
@@ -584,6 +588,11 @@ function App() {
                 key.classList.add("black-highlighted");
             }
             setActiveVoices(polySynth.activeVoices);
+            if (polySynth.activeVoices === 32){
+                console.log("context new")
+                Tone.context.close();
+                Tone.context = new AudioContext();
+            } 
         }
     
         const releaseNote = (key) => {
@@ -773,7 +782,6 @@ function App() {
             const file = e.target.files[0];
             reader.onload = (event) => {
                 const data = JSON.parse(event.target.result);
-                console.log(data);
                 updatePresetOptions(
                     {
                         type: "REPLACE_STATE",
