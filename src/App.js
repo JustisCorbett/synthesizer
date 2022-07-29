@@ -814,13 +814,15 @@ function App() {
                         </div>
                         <div className="presets-container"> 
                             <input  id="preset-name" className="preset-display" value={presetOptions.name} onChange={handlePresetNameChange} />
-                            <div onClick={() => downloadPreset(presetOptions)} className='preset-button' id="save">
-                                Save
+                            <div className="preset-buttons-container">
+                                <div onClick={() => downloadPreset(presetOptions)} className='preset-button' id="save">
+                                    Save
+                                </div>
+                                <label className='preset-button' id="load">
+                                    Load
+                                    <input className="fully-hidden" type="file" onChange={handleNewPresetFile} />
+                                </label>
                             </div>
-                            <label className='preset-button' id="load">
-                                Load
-                                <input className="fully-hidden" type="file" onChange={handleNewPresetFile} />
-                            </label>
                         </div>
                     </div>
                     

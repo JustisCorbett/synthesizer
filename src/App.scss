@@ -53,6 +53,7 @@ body{
     align-items: center;
     justify-content: center;
     padding: 1em;
+    margin-top: 3em;
     background-color: $synth_Color_Primary;
     border: 0.25em solid $synth_Color_Secondary;
 }
@@ -86,6 +87,14 @@ body{
 }
 
 .presets-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.preset-buttons-container {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -152,6 +161,7 @@ body{
     align-items: flex-end;
     justify-content: left;
     margin-bottom: 0.5em;
+    flex-wrap: wrap;
 }
 
 .main-label{
@@ -259,7 +269,7 @@ body{
     font-weight: 400;
     color: $synth_Color_Tertiary;
     height: 100%;
-    width: 100%;
+    width: fit-content;
     text-align: center;
     background-color: $synth_Color_Secondary;
     border: 0.15em solid $synth_Color_Tertiary;

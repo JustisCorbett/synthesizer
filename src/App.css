@@ -52,6 +52,7 @@ body {
       -ms-flex-pack: center;
           justify-content: center;
   padding: 1em;
+  margin-top: 3em;
   background-color: #606060;
   border: 0.25em solid #8C8C8C;
 }
@@ -114,6 +115,24 @@ body {
 }
 
 .presets-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+.preset-buttons-container {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -246,6 +265,8 @@ body {
       -ms-flex-pack: left;
           justify-content: left;
   margin-bottom: 0.5em;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
 }
 
 .main-label {
@@ -358,7 +379,9 @@ body {
   font-weight: 400;
   color: #141414;
   height: 100%;
-  width: 100%;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
   text-align: center;
   background-color: #8C8C8C;
   border: 0.15em solid #141414;
